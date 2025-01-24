@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "bootstrap": "^3.4.1"
+  },
+  "dependencies": {
+    "mysql2": "^3.12.0"
+  }
+}
