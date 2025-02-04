@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
   "name": "clinica-veterinaria-frontend",
   "version": "0.1.0",
   "private": true,
@@ -7,15 +6,17 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "ajv": "^8.17.1",
+    "ajv-keywords": "^5.1.0",
     "axios": "^1.7.9",
     "body-parser": "^1.20.3",
-    "bootstrap": "^5.3.3",
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "ipaddr.js": "^2.2.0",
     "mysql2": "^3.12.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-icons": "^5.4.0",
     "react-router-dom": "^6.28.1",
     "react-scripts": "^5.0.1",
     "web-vitals": "^2.1.4"
@@ -45,13 +46,7 @@
     ]
   },
   "devDependencies": {
+    "bootstrap": "^5.3.3",
     "webpack-dev-server": "^5.2.0"
-=======
-  "devDependencies": {
-    "bootstrap": "^3.4.1"
-  },
-  "dependencies": {
-    "mysql2": "^3.12.0"
->>>>>>> b305bfea778c5e4a51ff306c37eac40804f01402
   }
 }

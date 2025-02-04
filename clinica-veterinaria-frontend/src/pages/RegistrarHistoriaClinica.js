@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'; // Importa el JS de Bootstrap
+import 'bootstrap/dist/css/bootstrap.min.css'; // Solo CSS
+import 'bootstrap/dist/js/bootstrap.bundle';  // Importa el JS correctamente
+
 import '../Styles/Formulario..css'; // Asegúrate de que este archivo esté configurado correctamente.
 
 const RegistrarHistoriaClinica = () => {
