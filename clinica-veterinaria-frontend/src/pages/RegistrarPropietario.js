@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import api from '../api';
-import Toast from '../components/Toast';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import '../Styles/Formulario.css'; // Asegúrate de tener estilos adecuados
 
 const RegistrarPropietario = () => {
     const [propietario, setPropietario] = useState({
@@ -12,22 +14,24 @@ const RegistrarPropietario = () => {
         celular: '',
     });
 
-    const [showToast, setShowToast] = useState(false);
-    const [toastMessage, setToastMessage] = useState('');
-
-
     const handleChange = (e, field) => {
         setPropietario({ ...propietario, [field]: e.target.value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Validaciones
+        if (!propietario.nombre || !propietario.direccion || !propietario.ciudad || !propietario.provincia || !propietario.cedula || !propietario.celular) {
+            toast.error('Todos los campos son obligatorios', { position: 'top-right' });
+            return;
+        }
+
         try {
             await api.post('/propietarios', propietario);
-            setToastMessage('Registro de datos exitoso');
-            setShowToast(true);
+            toast.success('Registro de propietario exitoso', { position: 'top-right' });
 
-            // Limpiar formulario
+            // Limpiar formulario después del registro
             setPropietario({
                 nombre: '',
                 direccion: '',
@@ -36,10 +40,10 @@ const RegistrarPropietario = () => {
                 cedula: '',
                 celular: '',
             });
+
         } catch (error) {
             console.error('Error al registrar el propietario:', error);
-            setToastMessage('Hubo un error al registrar el propietario.');
-            setShowToast(true);
+            toast.error('Error al registrar el propietario. Intente de nuevo.', { position: 'top-right' });
         }
     };
 
@@ -72,6 +76,7 @@ const RegistrarPropietario = () => {
                             />
                         </div>
                     </div>
+
                     <div className="row">
                         <div className="col-md-4 mb-3">
                             <label htmlFor="ciudad" className="form-label">Ciudad:</label>
@@ -107,6 +112,7 @@ const RegistrarPropietario = () => {
                             />
                         </div>
                     </div>
+
                     <div className="row">
                         <div className="col-md-6 mb-3">
                             <label htmlFor="celular" className="form-label">Celular:</label>
@@ -120,18 +126,15 @@ const RegistrarPropietario = () => {
                             />
                         </div>
                     </div>
+
                     <button type="submit" className="btn btn-primary w-100 mt-3">
                         Registrar Propietario
                     </button>
                 </form>
             </div>
 
-            {/* Toast para mostrar mensajes */}
-            <Toast
-                show={showToast}
-                message={toastMessage}
-                onClose={() => setShowToast(false)}
-            />
+            {/* Notificación Toast */}
+            <ToastContainer autoClose={3000} hideProgressBar={false} position="top-right" />
         </div>
     );
 };

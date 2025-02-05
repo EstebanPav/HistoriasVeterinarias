@@ -3,7 +3,7 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Solo CSS
 import 'bootstrap/dist/js/bootstrap.bundle';  // Importa el JS correctamente
 
-import '../Styles/Formulario..css'; // Asegúrate de que este archivo esté configurado correctamente.
+import '../Styles/Formulario.css'; // Asegúrate de que este archivo esté configurado correctamente.
 
 const RegistrarHistoriaClinica = () => {
     const [mascotas, setMascotas] = useState([]);
@@ -21,7 +21,7 @@ const RegistrarHistoriaClinica = () => {
         alergias: '',
         cirugias: '',
         antecedentes: '',
-        enfermedadAnterior: '',
+        EnfermedadesAnteriores: '',
         observaciones: '',
         veterinario_id: ''
     });
@@ -76,7 +76,7 @@ const RegistrarHistoriaClinica = () => {
                 alergias: '',
                 cirugias: '',
                 antecedentes: '',
-                enfermedadAnterior: '',
+                EnfermedadesAnteriores: '',
                 observaciones: '',
                 veterinario_id: ''
             });
@@ -218,12 +218,12 @@ const RegistrarHistoriaClinica = () => {
                     onChange={handleChange}
                 ></textarea>
 
-                <label htmlFor="enfermedadAnterior">Enfermedades Anteriores:</label>
+                <label htmlFor="EnfermedadesAnteriores">Enfermedades Anteriores:</label>
                 <textarea
-                    id="enfermedadAnterior"
-                    name="enfermedadAnterior"
+                    id="EnfermedadesAnteriores"
+                    name="EnfermedadesAnteriores"
                     placeholder="Describa enfermedades anteriores"
-                    value={formData.enfermedadAnterior}
+                    value={formData.EnfermedadesAnteriores}
                     onChange={handleChange}
                 ></textarea>
 

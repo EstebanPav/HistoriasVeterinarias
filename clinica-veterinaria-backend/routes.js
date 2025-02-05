@@ -37,6 +37,37 @@ router.post('/api/propietarios', async (req, res) => {
     }
 });
 
+/* Eliminar propietario */
+router.delete('/api/propietarios/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        await db.query('DELETE FROM propietarios WHERE id = ?', [id]);
+        res.json({ message: 'Propietario eliminado correctamente' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al eliminar el propietario' });
+    }
+});
+
+/* Actualizar propietario */
+router.put('/api/propietarios/:id', async (req, res) => {
+    const { id } = req.params;
+    const { nombre, direccion, ciudad, provincia, cedula, celular } = req.body;
+
+    try {
+        await db.query(
+            'UPDATE propietarios SET nombre = ?, direccion = ?, ciudad = ?, provincia = ?, cedula = ?, celular = ? WHERE id = ?',
+            [nombre, direccion, ciudad, provincia, cedula, celular, id]
+        );
+        res.json({ message: 'Propietario actualizado correctamente' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al actualizar el propietario' });
+    }
+});
+
+
 // ==================== MASCOTAS ====================
 /**
  * Obtener todas las mascotas
@@ -72,6 +103,25 @@ router.post('/api/mascotas', async (req, res) => {
     }
 });
 
+// Actualizar una mascota por ID
+router.put('/api/mascotas/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { nombre, especie, raza, sexo, color, fecha_nacimiento, edad, procedencia, chip, propietario_id } = req.body;
+
+        const [result] = await db.query(
+            `UPDATE mascotas 
+             SET nombre=?, especie=?, raza=?, sexo=?, color=?, fecha_nacimiento=?, edad=?, procedencia=?, chip=?, propietario_id=?
+             WHERE id=?`,
+            [nombre, especie, raza, sexo, color, fecha_nacimiento, edad, procedencia, chip, propietario_id, id]
+        );
+
+        res.json({ message: 'Mascota actualizada con éxito' });
+    } catch (error) {
+        console.error('Error al actualizar la mascota:', error);
+        res.status(500).json({ error: 'Error al actualizar la mascota' });
+    }
+});
 // ==================== HISTORIAS CLÍNICAS ====================
 /**
  * Obtener todas las historias clínicas
@@ -103,7 +153,7 @@ router.post("/api/historias_clinicas", async (req, res) => {
         alergias,
         cirugias,
         antecedentes,
-        enfermedadAnterior,
+        EnfermedadesAnteriores,
         observaciones,
         veterinario_id,
       } = req.body;
@@ -128,7 +178,7 @@ router.post("/api/historias_clinicas", async (req, res) => {
           alergias,
           cirugias,
           antecedentes,
-          enfermedadAnterior,
+          EnfermedadesAnteriores,
           observaciones,
           veterinario_id
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -148,7 +198,7 @@ router.post("/api/historias_clinicas", async (req, res) => {
         alergias || null,
         cirugias || null,
         antecedentes || null,
-        enfermedadAnterior || null,
+        EnfermedadesAnteriores || null,
         observaciones || null,
         veterinario_id,
       ]);
@@ -163,6 +213,46 @@ router.post("/api/historias_clinicas", async (req, res) => {
       res.status(500).json({ error: "Error al registrar la historia clínica." });
     }
   });
+    
+  // ✅ Endpoint para actualizar historia clínica
+// Endpoint para actualizar una historia clínica
+// Endpoint para actualizar una historia clínica completa
+router.put("/api/historias_clinicas/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const {
+            mascota_id, fecha, vacunacion_tipo, vacunacion_fecha, desparasitacion_producto,
+            desparasitacion_fecha, estado_reproductivo, alimentacion, habitat, alergias,
+            cirugias, antecedentes, EnfermedadesAnteriores, observaciones, veterinario_id
+        } = req.body;
+
+        // Verificar si la historia existe
+        const [exist] = await db.query("SELECT * FROM historias_clinicas WHERE id = ?", [id]);
+        if (exist.length === 0) {
+            return res.status(404).json({ error: "Historia clínica no encontrada." });
+        }
+
+        // Actualizar la historia clínica en la base de datos
+        await db.query(
+            `UPDATE historias_clinicas SET
+                mascota_id = ?, fecha = ?, vacunacion_tipo = ?, vacunacion_fecha = ?,
+                desparasitacion_producto = ?, desparasitacion_fecha = ?, estado_reproductivo = ?,
+                alimentacion = ?, habitat = ?, alergias = ?, cirugias = ?, antecedentes = ?,
+                EnfermedadesAnteriores = ?, observaciones = ?, veterinario_id = ?
+            WHERE id = ?`,
+            [mascota_id, fecha, vacunacion_tipo, vacunacion_fecha, desparasitacion_producto,
+                desparasitacion_fecha, estado_reproductivo, alimentacion, habitat, alergias,
+                cirugias, antecedentes, EnfermedadesAnteriores, observaciones, veterinario_id, id]
+        );
+
+        res.json({ message: "Historia clínica actualizada correctamente." });
+    } catch (error) {
+        console.error("Error al actualizar la historia clínica:", error);
+        res.status(500).json({ error: "Error al actualizar la historia clínica." });
+    }
+});
+
+
   
   
   

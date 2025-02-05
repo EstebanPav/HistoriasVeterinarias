@@ -1,0 +1,40 @@
+.table-container {
+    width: 100%;
+    overflow-x: auto; /* Scroll horizontal */
+    padding: 10px;
+}
+
+.table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto; /* Permite scroll horizontal si es necesario */
+    white-space: nowrap;
+}
+
+.table-custom-header {
+    background-color: #008080;
+    color: white;
+    text-align: center;
+}
+
+.table th,
+.table td {
+    text-align: center;
+    vertical-align: middle;
+    min-width: 120px; /* Hace las columnas más anchas */
+}
+
+.form-control,
+.form-select {
+    width: 100%;
+    font-size: 14px;
+}
+
+.btn-sm {
+    padding: 5px 10px;
+    font-size: 14px;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 128, 128, 0.1);
+}
