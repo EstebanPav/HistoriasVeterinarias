@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 24-01-2025 a las 17:18:30
+-- Tiempo de generación: 07-02-2025 a las 01:22:32
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.1.17
 
@@ -88,9 +88,7 @@ CREATE TABLE `examenes_clinicos` (
 --
 
 INSERT INTO `examenes_clinicos` (`id`, `fecha`, `actitud`, `condicion_corporal`, `hidratacion`, `observaciones`, `mucosa_conjuntiva`, `mucosa_conjuntiva_observaciones`, `mucosa_oral`, `mucosa_oral_observaciones`, `mucosa_vulvar_prepu`, `mucosa_vulvar_prepu_observaciones`, `mucosa_rectal`, `mucosa_rectal_observaciones`, `mucosa_ojos`, `mucosa_ojos_observaciones`, `mucosa_oidos`, `mucosa_oidos_observaciones`, `mucosa_nodulos`, `mucosa_nodulos_observaciones`, `mucosa_piel_anexos`, `mucosa_piel_anexos_observaciones`, `locomocion_estado`, `locomocion_observaciones`, `musculo_estado`, `musculo_observaciones`, `nervioso_estado`, `nervioso_observaciones`, `cardiovascular_estado`, `cardiovascular_observaciones`, `respiratorio_estado`, `respiratorio_observaciones`, `digestivo_estado`, `digestivo_observaciones`, `genitourinario_estado`, `genitourinario_observaciones`, `mascota_id`) VALUES
-(2, '2025-01-22', 'Tranquilo', 'Delgado', 'D. 6-7%', 'Sin observaciones', 'Normal', NULL, 'Normal', NULL, 'Normal', NULL, 'Normal', NULL, 'Normal', NULL, 'Normal', NULL, 'Anormal', NULL, 'Anormal', NULL, 'Normal', 'Sin anomalías', 'Normal', 'Sin anomalías', 'Normal', 'Sin anomalías', 'Normal', 'Sin anomalías', 'Normal', 'Sin anomalías', 'Normal', 'Sin anomalías', 'Normal', 'Sin anomalías', 9),
 (3, '2025-01-25', 'Alterado', 'Normal', 'Normal', 'El animal parece estar en buen estado general.', 'Normal', NULL, 'Normal', NULL, 'Normal', NULL, 'Normal', NULL, 'Normal', NULL, 'Normal', NULL, 'Normal', NULL, 'Anormal', NULL, 'Normal', 'Sin irregularidades al caminar.', 'Normal', 'Músculos en buen estado.', 'Normal', 'Sin reflejos anormales.', 'Normal', 'Latidos regulares.', 'Anormal', 'Sibilancias detectadas.', 'Normal', 'Sin signos de dolor abdominal.', 'Normal', 'Sin problemas visibles.', 11),
-(5, '2025-01-01', 'Tranquilo', 'Normal', 'Normal', 'Observación general del examen clínico.', 'Normal', 'Sin anomalías.', 'Normal', 'Coloración adecuada.', 'Normal', 'Sin inflamaciones.', 'Normal', 'Sin problemas visibles.', 'Anormal', 'Ligeramente irritados.', 'Normal', 'Limpios.', 'Normal', 'Sin inflamación.', 'Anormal', 'Erupciones visibles.', 'Normal', 'Marcha adecuada.', 'Normal', 'Sin dolor al tacto.', 'Normal', 'Reflejos adecuados.', 'Normal', 'Latidos rítmicos.', 'Normal', 'Sin ruidos respiratorios anormales.', 'Normal', 'Sin problemas digestivos.', 'Anormal', 'Inflamación detectada.', 9),
 (7, '2025-01-09', 'Alterado', 'Delgado', 'D. 6-7%', 'YAAA', 'Anormal', 'YAAA', 'Normal', 'YAAA', 'Normal', 'YAAA', 'Normal', 'YAAA', 'Normal', 'YAAA', 'Anormal', 'YAAA', 'Normal', 'YAAA', 'Anormal', 'YAAA', 'Normal', 'YAAA', 'Normal', 'YAAA', 'Anormal', 'YAAA', 'Anormal', 'YAAA', 'Normal', 'YAAA', 'Anormal', 'YAAA', 'Anormal', 'YAAA', 11);
 
 -- --------------------------------------------------------
@@ -113,7 +111,7 @@ CREATE TABLE `historias_clinicas` (
   `alergias` varchar(255) DEFAULT NULL,
   `cirugias` varchar(255) DEFAULT NULL,
   `antecedentes` varchar(255) DEFAULT NULL,
-  `enfermedadAnterior` text DEFAULT NULL,
+  `EnfermedadesAnteriores` text DEFAULT NULL,
   `observaciones` text DEFAULT NULL,
   `veterinario_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -122,18 +120,12 @@ CREATE TABLE `historias_clinicas` (
 -- Volcado de datos para la tabla `historias_clinicas`
 --
 
-INSERT INTO `historias_clinicas` (`id`, `mascota_id`, `fecha`, `vacunacion_tipo`, `vacunacion_fecha`, `desparasitacion_producto`, `desparasitacion_fecha`, `estado_reproductivo`, `alimentacion`, `habitat`, `alergias`, `cirugias`, `antecedentes`, `enfermedadAnterior`, `observaciones`, `veterinario_id`) VALUES
-(10, 9, '2025-01-19', NULL, NULL, NULL, NULL, '', 'Balanceada', 'Casa', 'Polen', 'Ninguna', 'Ninguno', 'Gripe Canina', 'Revisar en 2 semanas', 1),
-(13, 10, '2025-01-25', 'DatoPrueba', '2024-05-01', 'DatoPrueba', '2024-06-15', 'Castrado', 'Balanceada', 'Casa', 'DatoPrueba', 'DatoPrueba', 'DatoPrueba', 'DatoPrueba', 'DatoPrueba', 2),
+INSERT INTO `historias_clinicas` (`id`, `mascota_id`, `fecha`, `vacunacion_tipo`, `vacunacion_fecha`, `desparasitacion_producto`, `desparasitacion_fecha`, `estado_reproductivo`, `alimentacion`, `habitat`, `alergias`, `cirugias`, `antecedentes`, `EnfermedadesAnteriores`, `observaciones`, `veterinario_id`) VALUES
+(13, 10, '2025-01-25', 'DatoPrueba', '2024-05-01', 'Dexpar2', '2024-06-15', 'Castrado', 'Balanceada', 'Casa', 'DatoPrueba', 'DatoPrueba', 'DatoPrueba', 'DatoPrueba', 'DatoPrueba', 1),
 (14, 10, '2025-01-17', 'DATOPRUEBA2', '2025-01-16', 'DATOPRUEBA2', '2025-01-17', 'Castrado', 'Balanceada', 'Casa', 'DATOPRUEBA2', 'DATOPRUEBA2', 'DATOPRUEBA2', 'DATOPRUEBA2', 'DATOPRUEBA2', 2),
 (18, 14, '2025-01-11', 'GENERAL', '2025-01-05', NULL, NULL, 'Entero', 'Balanceada', 'Taller', 'dfhg', 'sdgf', NULL, 'sdf', 'dfgh', 3),
-(20, 9, '2025-01-01', 'V1REGISTRO', '2025-01-02', 'V1REGISTRO', '2025-01-09', 'Castrado', 'Balanceada', 'Casa', 'V1REGISTRO', 'V1REGISTRO', 'V1REGISTRO', 'V1REGISTRO', 'V1REGISTRO', 4),
-(21, 9, '2025-01-01', 'Rabia', '2024-12-01', 'Drontal', '2024-11-01', 'Castrado', 'Balanceada', 'Casa', 'Ninguna', 'Ninguna', 'Ninguno', NULL, 'Control mensual', 2),
-(22, 9, '2025-01-01', 'Rabia', '2024-12-01', 'Drontal', '2024-11-01', 'Castrado', 'Balanceada', 'Casa', 'Ninguna', 'Ninguna', 'Ninguno', NULL, 'Control mensual', 2),
-(23, 9, '2025-01-01', 'Rabia', '2024-12-01', 'Drontal', '2024-11-01', 'Castrado', 'Balanceada', 'Casa', 'Ninguna', 'Ninguna', 'Ninguno', 'Nada', 'Control mensual', 2),
 (24, 11, '2025-01-15', 'V2REGISTRO', NULL, 'V2REGISTRO', '2025-01-26', 'Castrado', 'Balanceada', 'Finca', 'V2REGISTRO', 'V2REGISTRO', 'V2REGISTRO', 'V2REGISTRO', 'V2REGISTRO', 3),
-(25, 9, '2025-01-05', 'NULO2', '2025-01-04', 'NULO2', '2025-01-26', 'Entero', 'Casera', 'Lote', 'NULO2', 'NULO2', 'NULO2', 'NULO2', 'NULO2', 2),
-(26, 8, '2025-01-05', 'YAAAAA', '2025-01-24', 'YAAA', '2025-01-15', 'Entero', 'Casera', 'Lote', 'YAAA', 'YAAA', 'YAAA', 'YAAA', 'YAAA', 2);
+(27, 11, '2025-02-23', 'Paracetamol', '2025-02-11', 'Paracetamol', '2025-02-11', 'Castrado', 'Balanceada', 'Lote', 'Sin alergias', 'Sin cirugias', 'Sin antecedentes', 'Sin enfermadades anteriores', 'Nada', 3);
 
 -- --------------------------------------------------------
 
@@ -160,15 +152,13 @@ CREATE TABLE `mascotas` (
 --
 
 INSERT INTO `mascotas` (`id`, `nombre`, `especie`, `raza`, `sexo`, `color`, `fecha_nacimiento`, `edad`, `procedencia`, `chip`, `propietario_id`) VALUES
-(8, 'Bobby', 'Perro', 'Labrador', 'Macho', 'Dorado', '2020-06-15', 3, 'Urbana', '12345A', 10),
-(9, 'SelenaGaa', 'Gato', 'Gati', 'Hembra', 'Azul', '2025-01-16', 2, 'Urbana', '34512', 12),
-(10, 'ManDog', 'Perro', 'Gati', 'Macho', 'Rojo', '2025-01-16', 3, 'Urbana', '34512', 12),
+(10, 'Firulais', 'Perro', 'Gato', 'Hembra', 'Rojo', '2025-01-16', 3, 'Urbana', '34512', 11),
 (11, 'Peluche', 'Gato', 'wert', 'Hembra', 'Blanco', '2025-01-09', 2, 'Urbana', '234', 13),
 (13, 'Eliminar', 'Perro', 'tyui', 'Macho', 'dfg', '2025-01-09', 2, 'Urbana', NULL, 13),
-(14, 'PruebaRegistro', 'Perro', 'dfgh', 'Macho', 'sdfg', '2025-01-25', 13, 'Urbana', NULL, 13),
+(14, 'PruebaRegistro', 'Perro', 'dfgh', 'Macho', 'sdfg', '2025-01-25', 13, 'Rural', NULL, 13),
 (15, 'LeoArdilla', 'Perro', 'tyui', 'Hembra', 'xcfgh', '2025-01-24', 43, 'Urbana', '23', 12),
 (19, 'NULLTEXT', 'Perro', 'NULLTEXT', 'Macho', 'NULLTEXT', '2025-01-19', 3, 'Urbana', '', 24),
-(20, 'YAAA', 'Gato', 'YAAA', 'Hembra', 'YAAA', '2025-01-09', 3, 'Urbana', '', 12);
+(22, 'VitaLife', 'Perro', 'Golden Retriver', 'Macho', 'Rojo', '2025-02-19', 123, 'Urbana', '', 11);
 
 -- --------------------------------------------------------
 
@@ -191,14 +181,10 @@ CREATE TABLE `propietarios` (
 --
 
 INSERT INTO `propietarios` (`id`, `nombre`, `direccion`, `ciudad`, `provincia`, `cedula`, `celular`) VALUES
-(10, 'Juan Pérez', 'Av. Principal 123', 'Ciudad X', 'Provincia Y', '1234567890', '0987654321'),
-(11, 'Rick', 'Alexandria', 'California', 'Los Angeles', '0927323', '2322451'),
+(11, 'Rick', 'Alexandria', 'California', 'Albanyj', '0927323', '2322451'),
 (12, 'Carlos', 'dsds', 'hmh', 'hjhj', '12345', '54321'),
 (13, 'Martino', 'dfdf', 'hgre', 'ghmhgfe', '12345', '87654'),
-(18, 'DATOPRUEBA', 'DATOPRUEBA', 'DATOPRUEBA', 'DATOPRUEBA', 'DATOPRUEBA', '123456789'),
-(19, 'TESTDATA', 'TESTDATA', 'TESTDATA', 'TESTDATA', '123456', '3456'),
-(24, 'MISSINGNULL', 'MISSINGNULL', 'MISSINGNULL', 'MISSINGNULLMISSINGNULL', '345', '2345'),
-(25, 'dfgh,', 'dgfh', 'sd', 're', '456', '3');
+(24, 'MISSINGNULL', 'MISSINGNULL', 'MISSINGNULL', 'MISSINGNULLMISSINGNULL', '345', '2345');
 
 -- --------------------------------------------------------
 
@@ -311,19 +297,19 @@ ALTER TABLE `examenes_clinicos`
 -- AUTO_INCREMENT de la tabla `historias_clinicas`
 --
 ALTER TABLE `historias_clinicas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT de la tabla `mascotas`
 --
 ALTER TABLE `mascotas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT de la tabla `propietarios`
 --
 ALTER TABLE `propietarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
