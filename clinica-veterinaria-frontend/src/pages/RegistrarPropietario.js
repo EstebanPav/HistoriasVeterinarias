@@ -1,142 +1,170 @@
-import React, { useState } from 'react';
-import api from '../api';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import '../Styles/Formulario.css'; // Asegúrate de tener estilos adecuados
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../api";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { FaPaw, FaClinicMedical, FaCalendarAlt } from "react-icons/fa"; // 🔹 Iconos
+import "bootstrap/dist/css/bootstrap.min.css";
+import "../Styles/RegistrarPropietario.css"; // 📌 Importamos el nuevo CSS
 
 const RegistrarPropietario = () => {
-    const [propietario, setPropietario] = useState({
-        nombre: '',
-        direccion: '',
-        ciudad: '',
-        provincia: '',
-        cedula: '',
-        celular: '',
-    });
+  const navigate = useNavigate();
 
-    const handleChange = (e, field) => {
-        setPropietario({ ...propietario, [field]: e.target.value });
-    };
+  // 🔹 Redirigir a Home.js con la pestaña seleccionada
+  const goToHome = (tab) => {
+    navigate(`/?tab=${tab}`);
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+  const [propietario, setPropietario] = useState({
+    nombre: "",
+    direccion: "",
+    ciudad: "",
+    provincia: "",
+    cedula: "",
+    celular: "",
+  });
 
-        // Validaciones
-        if (!propietario.nombre || !propietario.direccion || !propietario.ciudad || !propietario.provincia || !propietario.cedula || !propietario.celular) {
-            toast.error('Todos los campos son obligatorios', { position: 'top-right' });
-            return;
-        }
+  const handleChange = (e, field) => {
+    setPropietario({ ...propietario, [field]: e.target.value });
+  };
 
-        try {
-            await api.post('/propietarios', propietario);
-            toast.success('Registro de propietario exitoso', { position: 'top-right' });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-            // Limpiar formulario después del registro
-            setPropietario({
-                nombre: '',
-                direccion: '',
-                ciudad: '',
-                provincia: '',
-                cedula: '',
-                celular: '',
-            });
+    if (
+      !propietario.nombre ||
+      !propietario.direccion ||
+      !propietario.ciudad ||
+      !propietario.provincia ||
+      !propietario.cedula ||
+      !propietario.celular
+    ) {
+      toast.error("Todos los campos son obligatorios", {
+        position: "top-right",
+      });
+      return;
+    }
 
-        } catch (error) {
-            console.error('Error al registrar el propietario:', error);
-            toast.error('Error al registrar el propietario. Intente de nuevo.', { position: 'top-right' });
-        }
-    };
+    try {
+      await api.post("/propietarios", propietario);
+      toast.success("Registro de propietario exitoso", {
+        position: "top-right",
+      });
 
-    return (
-        <div className="container mt-5">
-            <div className="card shadow-lg p-4">
-                <h1 className="text-center mb-4">Registrar Propietario</h1>
-                <form onSubmit={handleSubmit}>
-                    <div className="row">
-                        <div className="col-md-6 mb-3">
-                            <label htmlFor="nombre" className="form-label">Nombre:</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="nombre"
-                                value={propietario.nombre}
-                                onChange={(e) => handleChange(e, 'nombre')}
-                                required
-                            />
-                        </div>
-                        <div className="col-md-6 mb-3">
-                            <label htmlFor="direccion" className="form-label">Dirección:</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="direccion"
-                                value={propietario.direccion}
-                                onChange={(e) => handleChange(e, 'direccion')}
-                                required
-                            />
-                        </div>
-                    </div>
+      setPropietario({
+        nombre: "",
+        direccion: "",
+        ciudad: "",
+        provincia: "",
+        cedula: "",
+        celular: "",
+      });
+    } catch (error) {
+      console.error("Error al registrar el propietario:", error);
+      toast.error("Error al registrar el propietario. Intente de nuevo.", {
+        position: "top-right",
+      });
+    }
+  };
 
-                    <div className="row">
-                        <div className="col-md-4 mb-3">
-                            <label htmlFor="ciudad" className="form-label">Ciudad:</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="ciudad"
-                                value={propietario.ciudad}
-                                onChange={(e) => handleChange(e, 'ciudad')}
-                                required
-                            />
-                        </div>
-                        <div className="col-md-4 mb-3">
-                            <label htmlFor="provincia" className="form-label">Provincia:</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="provincia"
-                                value={propietario.provincia}
-                                onChange={(e) => handleChange(e, 'provincia')}
-                                required
-                            />
-                        </div>
-                        <div className="col-md-4 mb-3">
-                            <label htmlFor="cedula" className="form-label">Cédula:</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="cedula"
-                                value={propietario.cedula}
-                                onChange={(e) => handleChange(e, 'cedula')}
-                                required
-                            />
-                        </div>
-                    </div>
+  return (
+    <div className="dashboard-container">
+      {/* 📌 Sidebar con Mascotas y Clínica */}
+      <nav className="sidebar">
+        <ul>
+          <li onClick={() => goToHome("clinica")}>
+            <FaClinicMedical /> Información Clínica
+          </li>
+          <li onClick={() => goToHome("mascotas")}>
+            <FaPaw /> Mascotas
+          </li>
+          <li onClick={() => goToHome("calendario")}>
+            <FaCalendarAlt /> Calendario
+          </li>
+        </ul>
+      </nav>
 
-                    <div className="row">
-                        <div className="col-md-6 mb-3">
-                            <label htmlFor="celular" className="form-label">Celular:</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="celular"
-                                value={propietario.celular}
-                                onChange={(e) => handleChange(e, 'celular')}
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    <button type="submit" className="btn btn-primary w-100 mt-3">
-                        Registrar Propietario
-                    </button>
-                </form>
+      {/* 📌 Contenedor del formulario */}
+      <div className="registro-container">
+        <div className="registro-card">
+          <h2>Nuevo Propietario</h2>
+          <form className="registro-form" onSubmit={handleSubmit}>
+            <div className="row">
+              <div className="col-md-6 form-group">
+                <label>Nombre:</label>
+                <input
+                  type="text"
+                  value={propietario.nombre}
+                  onChange={(e) => handleChange(e, "nombre")}
+                  required
+                />
+              </div>
+              <div className="col-md-6 form-group">
+                <label>Dirección:</label>
+                <input
+                  type="text"
+                  value={propietario.direccion}
+                  onChange={(e) => handleChange(e, "direccion")}
+                  required
+                />
+              </div>
             </div>
 
-            {/* Notificación Toast */}
-            <ToastContainer autoClose={3000} hideProgressBar={false} position="top-right" />
+            <div className="row">
+              <div className="col-md-4 form-group">
+                <label>Ciudad:</label>
+                <input
+                  type="text"
+                  value={propietario.ciudad}
+                  onChange={(e) => handleChange(e, "ciudad")}
+                  required
+                />
+              </div>
+              <div className="col-md-4 form-group">
+                <label>Provincia:</label>
+                <input
+                  type="text"
+                  value={propietario.provincia}
+                  onChange={(e) => handleChange(e, "provincia")}
+                  required
+                />
+              </div>
+              <div className="col-md-4 form-group">
+                <label>Cédula:</label>
+                <input
+                  type="text"
+                  value={propietario.cedula}
+                  onChange={(e) => handleChange(e, "cedula")}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="col-md-12 form-group">
+                <label>Celular:</label>
+                <input
+                  type="text"
+                  value={propietario.celular}
+                  onChange={(e) => handleChange(e, "celular")}
+                  required
+                />
+              </div>
+            </div>
+
+            <button type="submit">Registrar Propietario</button>
+          </form>
         </div>
-    );
+      </div>
+
+      {/* Notificación Toast */}
+      <ToastContainer
+        autoClose={3000}
+        hideProgressBar={false}
+        position="top-right"
+      />
+    </div>
+  );
 };
 
 export default RegistrarPropietario;

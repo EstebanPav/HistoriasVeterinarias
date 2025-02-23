@@ -1,43 +1,61 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaUsers, FaPaw, FaFileMedical, FaClipboardList } from 'react-icons/fa';
+import { useLocation} from "react-router-dom"; // 📌 Para navegación
+import { FaPaw, FaClinicMedical, FaCalendarAlt } from 'react-icons/fa'; // 📌 Iconos
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../Styles/Dashboard.css';
 
-// Importamos las tablas específicas
-import PropietariosTable from './PropietariosTable';
 import MascotasTable from './MascotasTable';
-import HistoriasClinicasTable from './HistoriasClinicasTable'; 
-import ExamenesClinicosTable from './ExamenesClinicosTable'; 
+import ClinicaInfo from '../components/ClinicaInfo';
+import Calendario from '../components/Calendario'; // 📌 Importar el Calendario
 
 const Home = () => {
-    const [activeTab, setActiveTab] = useState('propietarios'); // Pestaña activa
-    const [data, setData] = useState([]);
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false); // Estado de carga
+    const location = useLocation();
+
+    const urlParams = new URLSearchParams(location.search);
+    const tabFromUrl = urlParams.get("tab");
+    const forceTab = urlParams.get("forceTab");
+
+    const [activeTab, setActiveTab] = useState(forceTab ? tabFromUrl : "clinica");
+
+    const [mascotas, setMascotas] = useState([]);
+    const [clinica, setClinica] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
     useEffect(() => {
-        fetchData(activeTab);
+        if (activeTab === "mascotas") {
+            fetchMascotas();
+        } else if (activeTab === "clinica") {
+            fetchClinicaInfo();
+        }
     }, [activeTab]);
 
-    const fetchData = async (tab) => {
-        let endpoint = '';
-        switch (tab) {
-            case 'propietarios': endpoint = '/api/propietarios'; break;
-            case 'mascotas': endpoint = '/api/mascotas'; break;
-            case 'historias': endpoint = '/api/historias_clinicas'; break;
-            case 'examenes': endpoint = '/api/examenes_clinicos'; break;
-            default: return;
-        }
-
+    const fetchMascotas = async () => {
         try {
             setLoading(true);
-            const response = await axios.get(`http://localhost:5000${endpoint}`);
-            setData(response.data);
-            setError('');
+            const response = await axios.get("http://localhost:5000/api/mascotas");
+            setMascotas(response.data || []);
+            setError("");
         } catch (err) {
-            console.error('Error al obtener los datos:', err);
-            setError('No se pudieron cargar los datos.');
+            console.error("Error al obtener las mascotas:", err);
+            setError("No se pudieron cargar los datos.");
+            setMascotas([]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchClinicaInfo = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get("http://localhost:5000/api/clinica");
+            setClinica(response.data);
+            setError("");
+        } catch (err) {
+            console.error("Error al obtener la información de la clínica:", err);
+            setError("No se pudo cargar la información de la clínica.");
+            setClinica(null);
         } finally {
             setLoading(false);
         }
@@ -45,49 +63,35 @@ const Home = () => {
 
     return (
         <div className="dashboard-container">
-            {/* 📌 Sidebar de navegación */}
+            {/* 📌 Sidebar con Mascotas, Clínica y Calendario */}
             <nav className="sidebar">
-                <h2 className="sidebar-title">Dashboard</h2>
                 <ul>
-                    <li onClick={() => setActiveTab('propietarios')} className={activeTab === 'propietarios' ? 'active' : ''}>
-                        <FaUsers /> Propietarios
+                    <li onClick={() => setActiveTab('clinica')} className={activeTab === 'clinica' ? 'active' : ''}>
+                        <FaClinicMedical /> Información Clínica
                     </li>
                     <li onClick={() => setActiveTab('mascotas')} className={activeTab === 'mascotas' ? 'active' : ''}>
                         <FaPaw /> Mascotas
                     </li>
-                    <li onClick={() => setActiveTab('historias')} className={activeTab === 'historias' ? 'active' : ''}>
-                        <FaFileMedical /> Historias Clínicas
-                    </li>
-                    <li onClick={() => setActiveTab('examenes')} className={activeTab === 'examenes' ? 'active' : ''}>
-                        <FaClipboardList /> Exámenes Clínicos
+                    <li onClick={() => setActiveTab('calendario')} className={activeTab === 'calendario' ? 'active' : ''}>
+                        <FaCalendarAlt /> Calendario
                     </li>
                 </ul>
             </nav>
 
             {/* 📌 Contenido Principal */}
             <div className="content">
-                <h1>{activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}</h1>
-                
-                {/* Estado de carga */}
-                {loading && <p className="loading-message">Cargando datos...</p>}
+                <h1>
+                    {activeTab === "clinica" ? "Información de la Clínica" 
+                    : activeTab === "mascotas" ? "Mascotas"
+                    : "Calendario"}
+                </h1>
 
-                <div className="table-container">
-                    {error ? (
-                        <p className="error-message">{error}</p>
-                    ) : (
-                        activeTab === 'propietarios' ? (
-                            <PropietariosTable propietarios={data} onPropietarioUpdated={() => fetchData('propietarios')} />
-                        ) : activeTab === 'mascotas' ? (
-                            <MascotasTable mascotas={data} onMascotaUpdated={() => fetchData('mascotas')} />
-                        ) : activeTab === 'historias' ? (
-                            <HistoriasClinicasTable historias={data} onHistoriaUpdated={() => fetchData('historias')} />
-                        ) : activeTab === 'examenes' ? (
-                            <ExamenesClinicosTable examenes={data} onExamenUpdated={() => fetchData('examenes')} />
-                        ) : (
-                            <p>Falta implementar para {activeTab}</p>
-                        )
-                    )}
-                </div>
+                {loading && <p className="loading-message">Cargando datos...</p>}
+                {error && <p className="error-message">{error}</p>}
+
+                {activeTab === "clinica" && <ClinicaInfo clinica={clinica} />}
+                {activeTab === "mascotas" && <MascotasTable mascotas={mascotas} onMascotaUpdated={fetchMascotas} />}
+                {activeTab === "calendario" && <Calendario />}
             </div>
         </div>
     );

@@ -9,7 +9,17 @@ import RegistrarMascota from './pages/RegistrarMascota';
 import RegistrarHistoriaClinica from './pages/RegistrarHistoriaClinica';
 import RegistrarExamenClinico from './pages/RegistrarExamenClinicos';
 import Navbar from './components/Navbar';
-
+import MascotasTable from "./pages/MascotasTable";
+import EditarMascota from "./components/EditarMascota";
+import Calendario from "./components/Calendario";
+import VerCitas from "./components/VerCitas";
+import EditarCita from "./components/EditarCitas";
+import NotificarCita from './components/NotificarCita';
+import VerPropietario from "./components/VerPropietario";
+import VerHistoriaClinica from "./components/VerHistoriaClinica";
+import EditarHistoriaClinica from "./components/EditarHistoriaClinica";
+import EditarExamenClinico from './components/EditarExamenClinico';
+import VerExamenClinico from "./components/VerExamenClinico";
 const App = () => {
     return (
         <Router>
@@ -36,6 +46,18 @@ const App = () => {
                 <Route path="/registrar-mascota" element={<RegistrarMascota />} />
                 <Route path="/registrar-historia/:mascotaId" element={<RegistrarHistoriaClinica />} />
                 <Route path="/registrar-examen-clinico" element={<RegistrarExamenClinico />} />
+                <Route path="/" element={<MascotasTable />} />
+                <Route path="/editar-mascota/:id" element={<EditarMascota/>} />
+                <Route path="/" element={<Calendario />} />
+                <Route path="/ver-citas" element={<VerCitas />} />
+                <Route path="/editar-cita/:id" element={<EditarCita />} />
+                <Route path="/notificar-cita/:id" element={<NotificarCita/>} />
+                <Route path="/ver-propietario" element={<VerPropietario />} />
+                <Route path="/ver-historia-clinica" element={<VerHistoriaClinica />} />
+                <Route path="/ver-examen-clinico" element={<VerExamenClinico />} />
+                <Route path="/editar-historia-clinica/:id" element={<EditarHistoriaClinica />} />
+                <Route path="/editar-examen-clinico/:id" element={<EditarExamenClinico />} />
+                
             </Routes>
         </Router>
     );

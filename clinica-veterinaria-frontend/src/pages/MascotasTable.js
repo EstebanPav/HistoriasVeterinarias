@@ -1,206 +1,133 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { FaEdit } from 'react-icons/fa';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import '../Styles/TablaMascota.css'; // Archivo CSS para mejorar el diseño
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { FaSearch } from "react-icons/fa";
+import "../Styles/TablaMascota.css";
+import { useNavigate } from "react-router-dom";
+import MascotaDetalles from "../components/MascotaDetalles";
 
-const MascotasTable = ({ mascotas, onMascotaUpdated }) => {
-    const [editingId, setEditingId] = useState(null);
-    const [editableData, setEditableData] = useState({});
-    const [propietarios, setPropietarios] = useState([]);
+const MascotasTable = () => {
+  const [mascotas, setMascotas] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredMascotas, setFilteredMascotas] = useState([]);
+  const [selectedMascota, setSelectedMascota] = useState(null);
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        setEditableData(
-            mascotas.reduce((acc, mascota) => {
-                acc[mascota.id] = { ...mascota };
-                return acc;
-            }, {})
-        );
-    }, [mascotas]);
-
-    useEffect(() => {
-        const fetchPropietarios = async () => {
-            try {
-                const response = await axios.get('http://localhost:5000/api/propietarios');
-                setPropietarios(response.data);
-            } catch (error) {
-                console.error('Error al cargar los propietarios:', error);
-            }
-        };
-        fetchPropietarios();
-    }, []);
-
-    const handleEditClick = (id) => {
-        setEditingId(id);
+  useEffect(() => {
+    const fetchMascotas = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/mascotas");
+        setMascotas(response.data);
+        setFilteredMascotas(response.data);
+      } catch (error) {
+        console.error("Error al cargar las mascotas:", error);
+      }
     };
 
-    const handleChange = (e, id, field) => {
-        setEditableData({
-            ...editableData,
-            [id]: {
-                ...editableData[id],
-                [field]: e.target.value,
-            },
-        });
-    };
+    fetchMascotas();
+  }, []);
 
-    const handleUpdate = async (id) => {
-        try {
-            await axios.put(`http://localhost:5000/api/mascotas/${id}`, editableData[id]);
-            toast.success('Mascota actualizada correctamente');
-            setEditingId(null);
-            onMascotaUpdated();
-        } catch (error) {
-            console.error('Error al actualizar la mascota:', error);
-            toast.error('Error al actualizar la mascota');
-        }
-    };
-
-    return (
-        <div className="table-container">
-            <h2 className="text-center mt-3">Mascotas</h2>
-            <div className="table-responsive">
-                <table className="table table-hover table-bordered shadow-sm">
-                    <thead className="table-custom-header">
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Especie</th>
-                            <th>Raza</th>
-                            <th>Sexo</th>
-                            <th>Color</th>
-                            <th>Fecha Nacimiento</th>
-                            <th>Edad</th>
-                            <th>Procedencia</th>
-                            <th>Chip</th>
-                            <th>Propietario</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {mascotas.map((mascota) => (
-                            <tr key={mascota.id}>
-                                <td>{mascota.id}</td>
-                                <td>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        value={editableData[mascota.id]?.nombre || ''}
-                                        onChange={(e) => handleChange(e, mascota.id, 'nombre')}
-                                        disabled={editingId !== mascota.id}
-                                    />
-                                </td>
-                                <td>
-                                    <select
-                                        className="form-select"
-                                        value={editableData[mascota.id]?.especie || ''}
-                                        onChange={(e) => handleChange(e, mascota.id, 'especie')}
-                                        disabled={editingId !== mascota.id}
-                                    >
-                                        <option value="Perro">Perro</option>
-                                        <option value="Gato">Gato</option>
-                                        <option value="Otro">Otro</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        value={editableData[mascota.id]?.raza || ''}
-                                        onChange={(e) => handleChange(e, mascota.id, 'raza')}
-                                        disabled={editingId !== mascota.id}
-                                    />
-                                </td>
-                                <td>
-                                    <select
-                                        className="form-select"
-                                        value={editableData[mascota.id]?.sexo || ''}
-                                        onChange={(e) => handleChange(e, mascota.id, 'sexo')}
-                                        disabled={editingId !== mascota.id}
-                                    >
-                                        <option value="Macho">Macho</option>
-                                        <option value="Hembra">Hembra</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        value={editableData[mascota.id]?.color || ''}
-                                        onChange={(e) => handleChange(e, mascota.id, 'color')}
-                                        disabled={editingId !== mascota.id}
-                                    />
-                                </td>
-                                <td>
-                                    <input
-                                        type="date"
-                                        className="form-control"
-                                        value={editableData[mascota.id]?.fecha_nacimiento || ''}
-                                        onChange={(e) => handleChange(e, mascota.id, 'fecha_nacimiento')}
-                                        disabled={editingId !== mascota.id}
-                                    />
-                                </td>
-                                <td>
-                                    <input
-                                        type="number"
-                                        className="form-control"
-                                        value={editableData[mascota.id]?.edad || ''}
-                                        onChange={(e) => handleChange(e, mascota.id, 'edad')}
-                                        disabled={editingId !== mascota.id}
-                                    />
-                                </td>
-                                <td>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        value={editableData[mascota.id]?.procedencia || ''}
-                                        onChange={(e) => handleChange(e, mascota.id, 'procedencia')}
-                                        disabled={editingId !== mascota.id}
-                                    />
-                                </td>
-                                <td>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        value={editableData[mascota.id]?.chip || ''}
-                                        onChange={(e) => handleChange(e, mascota.id, 'chip')}
-                                        disabled={editingId !== mascota.id}
-                                    />
-                                </td>
-                                <td>
-                                    <select
-                                        className="form-select"
-                                        value={editableData[mascota.id]?.propietario_id || ''}
-                                        onChange={(e) => handleChange(e, mascota.id, 'propietario_id')}
-                                        disabled={editingId !== mascota.id}
-                                    >
-                                        <option value="">Seleccione un propietario</option>
-                                        {propietarios.map((prop) => (
-                                            <option key={prop.id} value={prop.id}>
-                                                {prop.nombre}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </td>
-                                <td>
-                                    {editingId === mascota.id ? (
-                                        <button className="btn btn-success btn-sm" onClick={() => handleUpdate(mascota.id)}>
-                                            Guardar
-                                        </button>
-                                    ) : (
-                                        <button className="btn btn-warning btn-sm" onClick={() => handleEditClick(mascota.id)}>
-                                            <FaEdit />
-                                        </button>
-                                    )}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+  useEffect(() => {
+    const lowerCaseSearchTerm = searchTerm.toLowerCase();
+    const results = mascotas.filter((mascota) =>
+      Object.values(mascota).some(
+        (value) =>
+          value && value.toString().toLowerCase().includes(lowerCaseSearchTerm)
+      )
     );
+    setFilteredMascotas(results);
+  }, [searchTerm, mascotas]);
+
+  const handleRowClick = (mascota) => {
+    setSelectedMascota(mascota);
+  };
+
+  const handleVerPropietario = () => {
+    navigate(`/ver-propietario`); // 🔹 Redirige a la página sin pasar un ID específico
+  };
+
+  return (
+    <div className="table-container">
+      <div className="search-bar">
+        <div className="search-input-container">
+          <FaSearch className="search-icon" />
+          <input
+            type="text"
+            placeholder="🔍 Buscar en cualquier campo..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+        </div>
+      </div>
+
+      <div className="table-responsive">
+        <table className="table table-hover table-bordered shadow-sm">
+          <thead className="table-custom-header">
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Especie</th>
+              <th>Raza</th>
+              <th>Sexo</th>
+              <th>Color</th>
+              <th>Fecha Nacimiento</th>
+              <th>Edad</th>
+              <th>Propietario</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredMascotas.map((mascota) => (
+              <tr
+                key={mascota.id}
+                onClick={() => handleRowClick(mascota)}
+                className="clickable-row"
+              >
+                <td>{mascota.id}</td>
+                <td>{mascota.nombre}</td>
+                <td>{mascota.especie}</td>
+                <td>{mascota.raza}</td>
+                <td>{mascota.sexo}</td>
+                <td>{mascota.color}</td>
+                <td>{mascota.fecha_nacimiento}</td>
+                <td>{mascota.edad}</td>
+                <td>{mascota.propietario_nombre || "No asignado"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* 📌 Botón "Ver Propietario" debajo de la tabla */}
+      <div className="button-container">
+        <button onClick={handleVerPropietario} className="view-owner-btn">
+          🏠 Ver Dueños de Mascotas
+        </button>
+      </div>
+
+      {/* Botón para ver historia clínica */}
+      <button
+        onClick={() => navigate("/ver-historia-clinica")}
+        className="btn btn-info"
+      >
+        📜 Ver Historia Clínica
+      </button>
+             {/* Botón para ver historia clínica */}
+      <button
+        onClick={() => navigate("/ver-examen-clinico")}
+        className="btn btn-info"
+      >
+        🩺 Exámenes Clínicos
+      </button>
+
+      {/* 📌 Modal para ver detalles de la mascota */}
+      {selectedMascota && (
+        <MascotaDetalles
+          mascota={selectedMascota}
+          onClose={() => setSelectedMascota(null)}
+        />
+      )}
+    </div>
+  );
 };
 
 export default MascotasTable;
