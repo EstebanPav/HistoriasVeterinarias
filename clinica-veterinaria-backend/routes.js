@@ -1,7 +1,88 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const db = require('./db'); // Ajusta la ruta si el archivo tiene un nombre o ubicación diferente
+const db = require("./db"); // Asegúrate de que la ruta sea correcta
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const cors = require("cors");
+require("dotenv").config(); // 🔹 Cargar variables de entorno
 
+const saltRounds = 10; // Nivel de encriptación
+
+
+const verificarToken = (req, res, next) => {
+    const token = req.headers["x-access-token"];
+    if (!token) {
+        return res.status(403).json({ message: "Acceso denegado. Token no proporcionado." });
+    }
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        if (err) {
+            return res.status(401).json({ message: "Token inválido" });
+        }
+        req.usuario = decoded;
+        next();
+    });
+};
+
+// 📌 **LOGIN** (Autenticación con JWT y bcrypt)
+router.post("/api/login", async (req, res) => {
+    try {
+        const { correo, contrasena } = req.body;
+        const sql = "SELECT * FROM usuarios WHERE correo = ?";
+        const [results] = await db.query(sql, [correo]);
+
+        if (results.length === 0) {
+            return res.status(401).json({ message: "Usuario no encontrado" });
+        }
+
+        const usuario = results[0];
+
+        // 📌 Comparar contraseñas encriptadas
+        const isMatch = await bcrypt.compare(contrasena, usuario.contrasena);
+        if (!isMatch) {
+            return res.status(401).json({ message: "Contraseña incorrecta" });
+        }
+
+        // 📌 Crear Token JWT
+        const token = jwt.sign(
+            { id: usuario.id, nombre: usuario.nombre, rol: usuario.rol },
+            process.env.JWT_SECRET,
+            { expiresIn: "1h" }
+        );
+
+        res.json({ token, usuario: { id: usuario.id, nombre: usuario.nombre, rol: usuario.rol } });
+    } catch (error) {
+        console.error("Error en el login:", error);
+        res.status(500).json({ message: "Error interno del servidor" });
+    }
+});
+
+// 📌 **Registrar un usuario (Administrador)**
+router.post("/api/registro", async (req, res) => {
+    try {
+        const { nombre, correo, contrasena, celular, rol } = req.body;
+
+        // Validar datos
+        if (!nombre || !correo || !contrasena || !rol) {
+            return res.status(400).json({ message: "Todos los campos son obligatorios." });
+        }
+
+        // Encriptar contraseña
+        const hashedPassword = await bcrypt.hash(contrasena, saltRounds);
+
+        const sql = `INSERT INTO usuarios (nombre, correo, contrasena, celular, rol) VALUES (?, ?, ?, ?, ?)`;
+        const [result] = await db.query(sql, [nombre, correo, hashedPassword, celular, rol]);
+
+        res.status(201).json({ message: "Usuario registrado correctamente", usuarioId: result.insertId });
+    } catch (error) {
+        console.error("Error en el registro:", error);
+        res.status(500).json({ message: "Error interno del servidor" });
+    }
+});
+
+// 📌 **Ruta protegida de prueba**
+router.get("/api/protegido", verificarToken, (req, res) => {
+    res.json({ message: "Accediste a una ruta protegida", usuario: req.usuario });
+});
 
 router.get('/api/propietario/:id', async (req, res) => {
     try {
@@ -147,21 +228,6 @@ router.put("/api/editar_propietario/:id", async (req, res) => {
         res.status(500).json({ error: "❌ Error al actualizar el propietario." });
     }
 });
-
-// 📌 Eliminar un propietario por ID
-router.delete("/api/eliminar_propietario/:id", async (req, res) => {
-    const { id } = req.params;
-    
-    try {
-        await db.query("DELETE FROM propietarios WHERE id = ?", [id]);
-        res.status(200).json({ message: "✅ Propietario eliminado correctamente." });
-    } catch (error) {
-        console.error("Error al eliminar propietario:", error);
-        res.status(500).json({ error: "❌ Error al eliminar el propietario." });
-    }
-});
-
-
 
 // ==================== MASCOTAS ====================
 /**
@@ -1042,15 +1108,17 @@ router.get("/api/ver_cita/:id", async (req, res) => {
 });
 
 
-// 📌 Actualizar solo la fecha y hora de una cita
+// 📌 Actualizar todos los campos de una cita
 router.put("/api/editar_cita/:id", async (req, res) => {
     const { id } = req.params;
-    const { fecha_hora } = req.body;
+    const { fecha_hora, motivo, mascota_id, propietario_id, veterinario_id, estado } = req.body;
 
     try {
         const [result] = await db.query(
-            "UPDATE citas_veterinarias SET fecha_hora = ? WHERE id = ?",
-            [fecha_hora, id]
+            `UPDATE citas_veterinarias 
+            SET fecha_hora = ?, motivo = ?, mascota_id = ?, propietario_id = ?, veterinario_id = ?, estado = ? 
+            WHERE id = ?`,
+            [fecha_hora, motivo, mascota_id, propietario_id, veterinario_id, estado, id]
         );
 
         if (result.affectedRows > 0) {

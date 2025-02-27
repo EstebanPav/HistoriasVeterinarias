@@ -9,6 +9,10 @@ const VerExamenClinico = () => {
   const [selectedMascota, setSelectedMascota] = useState("");
   const [examenesClinicos, setExamenesClinicos] = useState([]);
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState(""); // Para la barra de búsqueda
+  const [filteredExamenes, setFilteredExamenes] = useState([]); // Para almacenar los exámenes filtrados
+  const [currentPage, setCurrentPage] = useState(1); // Página actual
+  const itemsPerPage = 5; // Número de elementos por página
 
   useEffect(() => {
     const fetchMascotas = async () => {
@@ -31,9 +35,12 @@ const VerExamenClinico = () => {
         `http://localhost:5000/api/examen_clinico/${mascotaId}`
       );
       setExamenesClinicos(response.data);
+      setFilteredExamenes(response.data); // Actualiza la lista filtrada
+      setCurrentPage(1); // 🔹 Reinicia a la primera página cuando cambia de mascota
     } catch (error) {
       console.error("Error al obtener los exámenes clínicos:", error);
       setExamenesClinicos([]);
+      setFilteredExamenes([]);
     }
   };
 
@@ -61,6 +68,25 @@ const VerExamenClinico = () => {
     } catch (error) {
       console.error("❌ Error al eliminar el examen clínico:", error);
       alert("❌ No se pudo eliminar el examen clínico.");
+    }
+  };
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredExamenes.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+
+  const nextPage = () => {
+    if (currentPage < Math.ceil(filteredExamenes.length / itemsPerPage)) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
     }
   };
 
@@ -93,6 +119,16 @@ const VerExamenClinico = () => {
             </option>
           ))}
         </select>
+
+        <div className="search-container">
+          <input
+            type="text"
+            placeholder="🔍 Buscar en cualquier campo..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+        </div>
 
         {examenesClinicos.length > 0 && (
           <div className="tabla-container">
@@ -139,7 +175,7 @@ const VerExamenClinico = () => {
                 </tr>
               </thead>
               <tbody>
-                {examenesClinicos.map((examen) => (
+                {currentItems.map((examen) => (
                   <tr key={examen.id}>
                     <td>{examen.fecha}</td>
                     <td>{examen.actitud}</td>
@@ -190,7 +226,8 @@ const VerExamenClinico = () => {
                     <td>
                       <button
                         className="btn btn-danger"
-                        onClick={() => handleEliminarExamenClinico(examen.id)}>
+                        onClick={() => handleEliminarExamenClinico(examen.id)}
+                      >
                         🗑 Eliminar
                       </button>
                     </td>
@@ -198,6 +235,29 @@ const VerExamenClinico = () => {
                 ))}
               </tbody>
             </table>
+            <div className="pagination">
+              <button
+                onClick={prevPage}
+                disabled={currentPage === 1}
+                className="pagination-btn"
+              >
+                ⬅️ Anterior
+              </button>
+              <span>
+                Página {currentPage} de{" "}
+                {Math.ceil(filteredExamenes.length / itemsPerPage)}
+              </span>
+              <button
+                onClick={nextPage}
+                disabled={
+                  currentPage >=
+                  Math.ceil(filteredExamenes.length / itemsPerPage)
+                }
+                className="pagination-btn"
+              >
+                Siguiente ➡️
+              </button>
+            </div>
           </div>
         )}
       </div>

@@ -2,13 +2,19 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../Styles/VerHistoriasClinicas.css";
-import { FaPaw, FaClinicMedical, FaCalendarAlt } from 'react-icons/fa';
+import { FaPaw, FaClinicMedical, FaCalendarAlt, FaSearch } from 'react-icons/fa';
 
 const VerHistoriaClinica = () => {
     const [mascotas, setMascotas] = useState([]);
     const [selectedMascota, setSelectedMascota] = useState("");
     const [historiasClinicas, setHistoriasClinicas] = useState([]);
+    const [filteredHistorias, setFilteredHistorias] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
     const navigate = useNavigate();
+
+    // 🔹 Estado para la paginación
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5; // 🔹 Número de registros por página
 
     // 🔹 Función para navegar entre pestañas
     const goToHome = (tab) => {
@@ -34,11 +40,26 @@ const VerHistoriaClinica = () => {
         try {
             const response = await axios.get(`http://localhost:5000/api/historia_clinica/${mascotaId}`);
             setHistoriasClinicas(response.data);
+            setFilteredHistorias(response.data);
+            setCurrentPage(1); // 🔹 Reiniciar a la primera página al cambiar de mascota
         } catch (error) {
             console.error("Error al obtener las historias clínicas:", error);
             setHistoriasClinicas([]);
+            setFilteredHistorias([]);
         }
     };
+
+    // 🔹 Función para filtrar historias clínicas según el término de búsqueda
+    useEffect(() => {
+        const lowerCaseSearchTerm = searchTerm.toLowerCase();
+        const results = historiasClinicas.filter((historia) =>
+            Object.values(historia).some(
+                (value) => value && value.toString().toLowerCase().includes(lowerCaseSearchTerm)
+            )
+        );
+        setFilteredHistorias(results);
+        setCurrentPage(1); // 🔹 Reiniciar a la primera página al buscar
+    }, [searchTerm, historiasClinicas]);
 
     // 🔹 Función para eliminar una historia clínica
     const handleEliminarHistoria = async (historiaId) => {
@@ -50,12 +71,31 @@ const VerHistoriaClinica = () => {
             if (response.status === 200) {
                 alert("✅ Historia clínica eliminada correctamente.");
                 setHistoriasClinicas(historiasClinicas.filter(historia => historia.historia_id !== historiaId));
+                setFilteredHistorias(filteredHistorias.filter(historia => historia.historia_id !== historiaId));
             } else {
                 alert("❌ No se pudo eliminar la historia clínica.");
             }
         } catch (error) {
             console.error("❌ Error al eliminar la historia clínica:", error);
             alert("❌ No se pudo eliminar la historia clínica.");
+        }
+    };
+
+    // 🔹 Calcular qué elementos mostrar en la página actual
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredHistorias.slice(indexOfFirstItem, indexOfLastItem);
+
+    // 🔹 Funciones para cambiar de página
+    const nextPage = () => {
+        if (currentPage < Math.ceil(filteredHistorias.length / itemsPerPage)) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const prevPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
         }
     };
 
@@ -87,7 +127,18 @@ const VerHistoriaClinica = () => {
                     ))}
                 </select>
 
-                {historiasClinicas.length > 0 && (
+                {/* 🔍 Barra de búsqueda */}
+                <div className="search-container">
+                    <FaSearch className="search-icon" />
+                    <input
+                        type="text"
+                        placeholder="🔍 Buscar en cualquier campo..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
+
+                {filteredHistorias.length > 0 && (
                     <div className="tabla-container">
                         <table className="historia-table">
                             <thead>
@@ -111,7 +162,7 @@ const VerHistoriaClinica = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {historiasClinicas.map((historia) => (
+                                {currentItems.map((historia) => (
                                     <tr key={historia.historia_id}>
                                         <td>{historia.fecha}</td>
                                         <td>{historia.vacunacion_tipo}</td>
@@ -144,9 +195,17 @@ const VerHistoriaClinica = () => {
                                             </button>
                                         </td>
                                     </tr>
+                                    
                                 ))}
                             </tbody>
                         </table>
+
+                        {/* 📌 Controles de paginación */}
+                        <div className="pagination">
+                            <button onClick={prevPage} disabled={currentPage === 1}>⬅️ Anterior</button>
+                            <span>Página {currentPage} de {Math.ceil(filteredHistorias.length / itemsPerPage)}</span>
+                            <button onClick={nextPage} disabled={currentPage >= Math.ceil(filteredHistorias.length / itemsPerPage)}>Siguiente ➡️</button>
+                        </div>
                     </div>
                 )}
             </div>

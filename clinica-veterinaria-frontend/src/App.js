@@ -20,6 +20,7 @@ import VerHistoriaClinica from "./components/VerHistoriaClinica";
 import EditarHistoriaClinica from "./components/EditarHistoriaClinica";
 import EditarExamenClinico from './components/EditarExamenClinico';
 import VerExamenClinico from "./components/VerExamenClinico";
+import EditarDueñoMascota from "./components/EditarDueñoMascota";
 const App = () => {
     return (
         <Router>
@@ -53,10 +54,12 @@ const App = () => {
                 <Route path="/editar-cita/:id" element={<EditarCita />} />
                 <Route path="/notificar-cita/:id" element={<NotificarCita/>} />
                 <Route path="/ver-propietario" element={<VerPropietario />} />
+                <Route path="/editar-propietario/:id" element={<EditarDueñoMascota />} />
                 <Route path="/ver-historia-clinica" element={<VerHistoriaClinica />} />
                 <Route path="/ver-examen-clinico" element={<VerExamenClinico />} />
                 <Route path="/editar-historia-clinica/:id" element={<EditarHistoriaClinica />} />
                 <Route path="/editar-examen-clinico/:id" element={<EditarExamenClinico />} />
+                
                 
             </Routes>
         </Router>

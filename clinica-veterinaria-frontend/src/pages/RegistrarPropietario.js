@@ -87,7 +87,7 @@ const RegistrarPropietario = () => {
       {/* 📌 Contenedor del formulario */}
       <div className="registro-container">
         <div className="registro-card">
-          <h2>Nuevo Propietario</h2>
+          <h2>Registrar Nuevo Dueño de Mascota</h2>
           <form className="registro-form" onSubmit={handleSubmit}>
             <div className="row">
               <div className="col-md-6 form-group">
@@ -152,7 +152,7 @@ const RegistrarPropietario = () => {
               </div>
             </div>
 
-            <button type="submit">Registrar Propietario</button>
+            <button type="submit">Registrar Dueño de Masctoa</button>
           </form>
         </div>
       </div>

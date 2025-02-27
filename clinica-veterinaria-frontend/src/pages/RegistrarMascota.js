@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify"; // Importar react-toastify
 import { FaPaw, FaClinicMedical, FaCalendarAlt } from "react-icons/fa"; // 🔹 Iconos
 import api from "../api";
+//import "../Styles/RegistrarMascota.css";
 
 const RegistrarMascota = () => {
   // 🔹 Función para navegar a Home.js con la pestaña seleccionada
@@ -110,6 +111,7 @@ const RegistrarMascota = () => {
           </li>
         </ul>
       </nav>
+
       <div className="container mt-5">
         <div className="card shadow-lg p-4">
           <form onSubmit={handleSubmit}>
@@ -169,8 +171,7 @@ const RegistrarMascota = () => {
                   className="form-control"
                   name="sexo"
                   value={mascota.sexo}
-                  onChange={handleChange}
-                >
+                  onChange={handleChange}>
                   <option value="Macho">Macho</option>
                   <option value="Hembra">Hembra</option>
                 </select>
