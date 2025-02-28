@@ -120,6 +120,7 @@ const RegistrarExamenClinico = () => {
     <div className="dashboard-container">
       <Sidebar /> {/* 📌 Usamos el nuevo Sidebar */}
       <div className="form-container">
+      <h2 className="form-title">Registro de Examen Clínico</h2> {/* 🔹 Nuevo título centrado */}
         <form onSubmit={handleSubmit}>
           {error && <p className="error-message">{error}</p>}
           {success && <p className="success-message">{success}</p>}

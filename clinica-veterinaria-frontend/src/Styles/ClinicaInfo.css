@@ -1,10 +1,15 @@
-/* 🏥 Contenedor principal */
+/* 🏥 Contenedor principal con control de movimiento */
 .clinica-container {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    height: 80vh;
-    padding: 20px;
+    justify-content: center;
+    height: 50vh;
+    width: 100%;
+    text-align: center;
+    position: relative; /* Permite mover con top, left, right, bottom */
+    top: 0px; /* Cambia este valor para mover arriba/abajo */
+    left: -150px; /* Cambia este valor para mover izquierda/derecha */
 }
 
 /* 📌 Tarjeta de presentación */
@@ -17,7 +22,20 @@
     width: 600px;
     max-width: 90%;
     transition: transform 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
+
+/* 🏥 Título con control de movimiento */
+.clinica-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+
 
 /* 🖼️ Imagen del logo */
 .clinica-logo {

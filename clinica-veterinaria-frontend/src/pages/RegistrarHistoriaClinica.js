@@ -101,6 +101,7 @@ const RegistrarHistoriaClinica = () => {
     <div className="dashboard-container">
       <Sidebar /> {/* 📌 Usamos el nuevo Sidebar */}
       <div className="historias-form-container">
+      <h2 className="form-title">Registrar Historia</h2> 
         <form className="historias-form" onSubmit={handleSubmit}>
           {error && <p className="error-message">{error}</p>}
           {success && <p className="success-message">{success}</p>}

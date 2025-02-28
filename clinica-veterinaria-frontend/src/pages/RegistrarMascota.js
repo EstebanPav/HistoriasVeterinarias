@@ -97,6 +97,7 @@ const RegistrarMascota = () => {
       <Sidebar /> {/* 📌 Usamos el nuevo Sidebar */}
 
       <div className="container mt-5">
+      <h2 className="form-title">Registrar Mascota</h2>
         <div className="card shadow-lg p-4">
           <form onSubmit={handleSubmit}>
             <div className="row">

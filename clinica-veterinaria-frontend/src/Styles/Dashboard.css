@@ -4,6 +4,18 @@
     min-height: 100vh;
     background-color: #f4f4f4;
 }
+/* 📌 Estilo para el título principal */
+.dashboard-title {
+    position: relative; /* Permite mover con top, left, right, bottom */
+    top: 0px; /* Modifica este valor para mover arriba/abajo */
+    left: -150px; /* Modifica este valor para mover izquierda/derecha */
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+    text-align: center; /* Asegura que el título se mantenga centrado */
+    transition: all 0.3s ease-in-out; /* Suaviza los movimientos */
+}
+
 
 /* 📌 Sidebar */
 .sidebar {

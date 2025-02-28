@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate, useLocation } from "react-router-dom"; 
+import { useNavigate, useLocation } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../Styles/Dashboard.css';
 
@@ -75,10 +75,10 @@ const Home = () => {
 
             {/* 📌 Contenido Principal */}
             <div className="content">
-                <h1>
-                    {activeTab === "clinica" ? "Información de la Clínica" 
-                    : activeTab === "mascotas" ? "Mascotas"
-                    : "Calendario"}
+                <h1 className="dashboard-title">
+                    {activeTab === "clinica" ? "Información de la Clínica"
+                        : activeTab === "mascotas" ? "Mascotas"
+                            : "Calendario"}
                 </h1>
 
                 {loading && <p className="loading-message">Cargando datos...</p>}
