@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../Styles/VerHistoriasClinicas.css";
-import { FaPaw, FaClinicMedical, FaCalendarAlt, FaSearch } from 'react-icons/fa';
+import { FaSearch } from 'react-icons/fa';
+import Sidebar from "../components/Sidebar"; // ✅ Sidebar integrado
 
 const VerHistoriaClinica = () => {
     const [mascotas, setMascotas] = useState([]);
@@ -15,11 +16,6 @@ const VerHistoriaClinica = () => {
     // 🔹 Estado para la paginación
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5; // 🔹 Número de registros por página
-
-    // 🔹 Función para navegar entre pestañas
-    const goToHome = (tab) => {
-        navigate(`/?tab=${tab}&forceTab=true`);
-    };
 
     useEffect(() => {
         const fetchMascotas = async () => {
@@ -101,20 +97,8 @@ const VerHistoriaClinica = () => {
 
     return (
         <div className="dashboard-container">
-            {/* 📌 Sidebar */}
-            <nav className="sidebar">
-                <ul>
-                    <li onClick={() => goToHome("clinica")}>
-                        <FaClinicMedical /> Información Clínica
-                    </li>
-                    <li onClick={() => goToHome("mascotas")}>
-                        <FaPaw /> Mascotas
-                    </li>
-                    <li onClick={() => goToHome("calendario")}>
-                        <FaCalendarAlt /> Calendario
-                    </li>
-                </ul>
-            </nav>
+            {/* 📌 Sidebar correctamente integrado */}
+      <Sidebar />
 
             <div className="historia-container">
                 <h2>📜 Historial Clínico</h2>

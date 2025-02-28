@@ -1,127 +1,39 @@
+/* 📌 Contenedor principal */
 .dashboard-container {
     display: flex;
     min-height: 100vh;
-    background: #f8f8f8;
+    background-color: #f4f4f4;
 }
 
-/* 🎨 Estilo Sidebar */
+/* 📌 Sidebar */
 .sidebar {
     width: 250px;
+    height: 100vh;
     background: #212537;
     color: white;
     padding: 20px;
-    display: flex;
-    flex-direction: column;
-    transition: width 0.3s ease-in-out;
+    position: fixed;
+    top: 60px; /* 🔹 Se ajusta debajo de la navbar */
+    left: 0;
+    overflow-y: auto;
 }
 
-.sidebar-title {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 22px;
-    font-weight: bold;
-}
-
-.sidebar ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.sidebar ul li {
-    padding: 12px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    transition: background 0.3s, transform 0.2s;
-    border-radius: 5px;
-}
-
-.sidebar ul li:hover,
-.sidebar ul li.active {
-    background: #119DA4;
-    transform: scale(1.05);
-}
-
-.sidebar ul li svg {
-    margin-right: 12px;
-    font-size: 18px;
-}
-
-/* 📊 Contenido */
+/* 📌 Contenido Principal */
 .content {
     flex: 1;
     padding: 20px;
-    background: #f8f8f8;
-    overflow-x: auto; /* Permite scroll horizontal */
+    margin-left: 260px; /* 🔹 Se ajusta según el tamaño del sidebar */
+    margin-top: 20px; /* 🔹 Evita que quede oculto por la navbar */
+    width: calc(100% - 260px); /* 🔹 Ajusta el ancho */
 }
 
-.content h1 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 28px;
-    color: #119DA4;
-}
-
-/* 🏥 Estilos de la Tabla */
-.table-container {
-    width: 100%;
-    overflow-x: auto;
-    background: white;
-    border-radius: 10px;
-    padding: 15px;
-    box-shadow: 0px 4px 15px rgba(0, 169, 157, 0.5);
-}
-
-/* 🎨 Tabla estilizada */
-.table {
-    width: 100%;
-    min-width: 800px;
-    border-collapse: collapse;
-    text-align: left;
-}
-
-.table th {
-    background: #119DA4;
-    color: white;
-    padding: 12px;
-    font-size: 14px;
-}
-
-.table td {
-    padding: 12px;
-    border-bottom: 1px solid #ddd;
-    font-size: 14px;
-}
-
-/* 🛠️ Responsive para móviles */
-@media screen and (max-width: 768px) {
-    .dashboard-container {
-        flex-direction: column;
-    }
-
+/* 📌 Ajuste responsivo */
+@media (max-width: 992px) {
     .sidebar {
-        width: 100%;
-        flex-direction: row;
-        overflow-x: auto;
-        padding: 10px;
+        width: 60px; /* 🔹 Sidebar más pequeña en pantallas chicas */
     }
 
-    .sidebar ul {
-        display: flex;
-        justify-content: space-around;
-        width: 100%;
-    }
-
-    .sidebar ul li {
-        padding: 10px;
-        font-size: 14px;
-    }
-
-    .table-container {
-        overflow-x: auto;
-    }
-
-    .table {
-        min-width: 600px;
+    .content {
+        margin-left: 70px; /* 🔹 Ajustar margen para sidebar reducido */
     }
 }

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-//import "../Styles/VerExamenClinico.css";
-import { FaPaw, FaClinicMedical, FaCalendarAlt } from "react-icons/fa";
+import "../Styles/VerExamenClinico.css";
+import Sidebar from "../components/Sidebar"; // ✅ Sidebar integrado
 
 const VerExamenClinico = () => {
   const [mascotas, setMascotas] = useState([]);
@@ -92,20 +92,8 @@ const VerExamenClinico = () => {
 
   return (
     <div className="dashboard-container">
-      {/* 📌 Sidebar */}
-      <nav className="sidebar">
-        <ul>
-          <li onClick={() => navigate("/?tab=clinica")}>
-            <FaClinicMedical /> Información Clínica
-          </li>
-          <li onClick={() => navigate("/?tab=mascotas")}>
-            <FaPaw /> Mascotas
-          </li>
-          <li onClick={() => navigate("/?tab=calendario")}>
-            <FaCalendarAlt /> Calendario
-          </li>
-        </ul>
-      </nav>
+      {/* 📌 Sidebar correctamente integrado */}
+      <Sidebar />
 
       <div className="historia-container">
         <h2>🩺 Exámenes Clínicos</h2>

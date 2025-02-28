@@ -1,16 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useLocation} from "react-router-dom"; // 📌 Para navegación
-import { FaPaw, FaClinicMedical, FaCalendarAlt } from 'react-icons/fa'; // 📌 Iconos
+import { useNavigate, useLocation } from "react-router-dom"; 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../Styles/Dashboard.css';
 
+import Sidebar from '../components/Sidebar'; // 🔹 Importamos el nuevo Sidebar
 import MascotasTable from './MascotasTable';
 import ClinicaInfo from '../components/ClinicaInfo';
-import Calendario from '../components/Calendario'; // 📌 Importar el Calendario
+import Calendario from '../components/Calendario';
 
 const Home = () => {
+    const navigate = useNavigate();
     const location = useLocation();
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/login");
+        }
+    }, [navigate]);
 
     const urlParams = new URLSearchParams(location.search);
     const tabFromUrl = urlParams.get("tab");
@@ -63,20 +71,7 @@ const Home = () => {
 
     return (
         <div className="dashboard-container">
-            {/* 📌 Sidebar con Mascotas, Clínica y Calendario */}
-            <nav className="sidebar">
-                <ul>
-                    <li onClick={() => setActiveTab('clinica')} className={activeTab === 'clinica' ? 'active' : ''}>
-                        <FaClinicMedical /> Información Clínica
-                    </li>
-                    <li onClick={() => setActiveTab('mascotas')} className={activeTab === 'mascotas' ? 'active' : ''}>
-                        <FaPaw /> Mascotas
-                    </li>
-                    <li onClick={() => setActiveTab('calendario')} className={activeTab === 'calendario' ? 'active' : ''}>
-                        <FaCalendarAlt /> Calendario
-                    </li>
-                </ul>
-            </nav>
+            <Sidebar /> {/* 📌 Usamos el nuevo componente Sidebar */}
 
             {/* 📌 Contenido Principal */}
             <div className="content">

@@ -1,18 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css"; // Solo CSS
 import "bootstrap/dist/js/bootstrap.bundle"; // Importa el JS correctamente
-import { FaPaw, FaClinicMedical, FaCalendarAlt } from "react-icons/fa"; // 🔹 Iconos
 
 import "../Styles/HistoriasClinicas.css"; // Asegúrate de que este archivo esté configurado correctamente.
+import Sidebar from "../components/Sidebar"; // 🔹 Importamos Sidebar
 
 const RegistrarHistoriaClinica = () => {
-  const navigate = useNavigate(); // 🔹 Para redireccionar a Home con pestaña seleccionada
-  // 🔹 Función para navegar a Home.js con la pestaña seleccionada
-  const goToHome = (tab) => {
-    navigate(`/?tab=${tab}&forceTab=true`); // 🔹 Agrega el parámetro "forceTab"
-  };
 
   const [mascotas, setMascotas] = useState([]);
   const [veterinarios, setVeterinarios] = useState([]);
@@ -105,20 +99,7 @@ const RegistrarHistoriaClinica = () => {
 
   return (
     <div className="dashboard-container">
-      {/* 📌 Sidebar con Mascotas y Clínica */}
-      <nav className="sidebar">
-        <ul>
-          <li onClick={() => goToHome("clinica")}>
-            <FaClinicMedical /> Información Clínica
-          </li>
-          <li onClick={() => goToHome("mascotas")}>
-            <FaPaw /> Mascotas
-          </li>
-          <li onClick={() => goToHome("calendario")}>
-            <FaCalendarAlt /> Calendario
-          </li>
-        </ul>
-      </nav>
+      <Sidebar /> {/* 📌 Usamos el nuevo Sidebar */}
       <div className="historias-form-container">
         <form className="historias-form" onSubmit={handleSubmit}>
           {error && <p className="error-message">{error}</p>}

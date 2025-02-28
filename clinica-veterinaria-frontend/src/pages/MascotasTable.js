@@ -4,6 +4,7 @@ import { FaSearch } from "react-icons/fa";
 import "../Styles/TablaMascota.css";
 import { useNavigate } from "react-router-dom";
 import MascotaDetalles from "../components/MascotaDetalles";
+import Sidebar from "../components/Sidebar"; // ✅ Sidebar integrado
 
 const MascotasTable = () => {
   const [mascotas, setMascotas] = useState([]);
@@ -67,98 +68,112 @@ const MascotasTable = () => {
       setCurrentPage(currentPage - 1);
     }
   };
+
   return (
-    <div className="table-container">
-      <div className="search-bar">
-        <div className="search-input-container">
-          <FaSearch className="search-icon" />
-          <input
-            type="text"
-            placeholder="🔍 Buscar en cualquier campo..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
+    <div className="dashboard-container">
+      {/* 📌 Sidebar correctamente integrado */}
+      <Sidebar />
+
+      {/* 📌 Contenedor de la tabla centrado */}
+      <div className="table-content">
+        <h2 className="table-title">🐾 Lista de Mascotas</h2>
+
+        {/* 📌 Barra de búsqueda */}
+        <div className="search-bar">
+          <div className="search-input-container">
+            <FaSearch className="search-icon" />
+            <input
+              type="text"
+              placeholder="🔍 Buscar en cualquier campo..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+          </div>
         </div>
-      </div>
 
-      <div className="table-responsive">
-        <table className="table table-hover table-bordered shadow-sm">
-          <thead className="table-custom-header">
-            <tr>
-              <th>ID</th>
-              <th>Nombre</th>
-              <th>Especie</th>
-              <th>Raza</th>
-              <th>Sexo</th>
-              <th>Color</th>
-              <th>Fecha Nacimiento</th>
-              <th>Edad</th>
-              <th>Propietario</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentItems.map((mascota) => (
-              <tr
-                key={mascota.id}
-                onClick={() => handleRowClick(mascota)}
-                className="clickable-row"
-              >
-                <td>{mascota.id}</td>
-                <td>{mascota.nombre}</td>
-                <td>{mascota.especie}</td>
-                <td>{mascota.raza}</td>
-                <td>{mascota.sexo}</td>
-                <td>{mascota.color}</td>
-                <td>{mascota.fecha_nacimiento}</td>
-                <td>{mascota.edad}</td>
-                <td>{mascota.propietario_nombre || "No asignado"}</td>
+        {/* 📌 Tabla de Mascotas */}
+        <div className="table-responsive">
+          <table className="table table-hover table-bordered shadow-sm">
+            <thead className="table-custom-header">
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Especie</th>
+                <th>Raza</th>
+                <th>Sexo</th>
+                <th>Color</th>
+                <th>Fecha Nacimiento</th>
+                <th>Edad</th>
+                <th>Propietario</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {currentItems.map((mascota) => (
+                <tr
+                  key={mascota.id}
+                  onClick={() => handleRowClick(mascota)}
+                  className="clickable-row"
+                >
+                  <td>{mascota.id}</td>
+                  <td>{mascota.nombre}</td>
+                  <td>{mascota.especie}</td>
+                  <td>{mascota.raza}</td>
+                  <td>{mascota.sexo}</td>
+                  <td>{mascota.color}</td>
+                  <td>{mascota.fecha_nacimiento}</td>
+                  <td>{mascota.edad}</td>
+                  <td>{mascota.propietario_nombre || "No asignado"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-       {/* 📌 Controles de paginación */}
-       <div className="pagination">
-        <button onClick={prevPage} disabled={currentPage === 1} className="pagination-btn">
-          ⬅️ Anterior
+        {/* 📌 Controles de paginación */}
+        <div className="pagination">
+          <button onClick={prevPage} disabled={currentPage === 1} className="pagination-btn">
+            ⬅️ Anterior
+          </button>
+          <span>
+            Página {currentPage} de {Math.ceil(filteredMascotas.length / itemsPerPage)}
+          </span>
+          <button onClick={nextPage} disabled={currentPage >= Math.ceil(filteredMascotas.length / itemsPerPage)} className="pagination-btn">
+            Siguiente ➡️
+          </button>
+        </div>
+
+        {/* 📌 Botón "Ver Propietario" debajo de la tabla */}
+        <div className="button-container">
+          <button onClick={handleVerPropietario} className="view-owner-btn">
+            🏠 Ver Dueños de Mascotas
+          </button>
+        </div>
+
+        {/* Botón para ver historia clínica */}
+        <button
+          onClick={() => navigate("/ver-historia-clinica")}
+          className="btn btn-info"
+        >
+          📜 Ver Historia Clínica
         </button>
-        <span>Página {currentPage} de {Math.ceil(filteredMascotas.length / itemsPerPage)}</span>
-        <button onClick={nextPage} disabled={currentPage >= Math.ceil(filteredMascotas.length / itemsPerPage)} className="pagination-btn">
-          Siguiente ➡️
+
+        {/* Botón para ver exámen clínico */}
+        <button
+          onClick={() => navigate("/ver-examen-clinico")}
+          className="btn btn-info"
+        >
+          🩺 Ver Exámenes Clínicos
         </button>
+
+        {/* 📌 Modal para ver detalles de la mascota */}
+        {selectedMascota && (
+          <MascotaDetalles
+            mascota={selectedMascota}
+            onClose={() => setSelectedMascota(null)}
+          />
+        )}
       </div>
-      {/* 📌 Botón "Ver Propietario" debajo de la tabla */}
-      <div className="button-container">
-        <button onClick={handleVerPropietario} className="view-owner-btn">
-          🏠 Ver Dueños de Mascotas
-        </button>
-      </div>
-
-      {/* Botón para ver historia clínica */}
-      <button
-        onClick={() => navigate("/ver-historia-clinica")}
-        className="btn btn-info"
-      >
-        📜 Ver Historia Clínica
-      </button>
-
-             {/* Botón para ver exámen clínico */}
-      <button
-        onClick={() => navigate("/ver-examen-clinico")}
-        className="btn btn-info"
-      >
-        🩺 Ver Exámenes Clínicos
-      </button>
-
-      {/* 📌 Modal para ver detalles de la mascota */}
-      {selectedMascota && (
-        <MascotaDetalles
-          mascota={selectedMascota}
-          onClose={() => setSelectedMascota(null)}
-        />
-      )}
     </div>
   );
 };

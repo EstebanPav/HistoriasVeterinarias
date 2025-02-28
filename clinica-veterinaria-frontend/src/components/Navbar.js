@@ -1,12 +1,19 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../Styles/Navbar.css';
 
 const Navbar = () => {
+  const navigate = useNavigate();
+
+  // 📌 Función para cerrar sesión
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // 🔹 Eliminar token de sesión
+    navigate("/login"); // 🔹 Redirigir al login
+  };
+
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container">
-        <Link className="navbar-brand" to="/">Clínica Veterinaria</Link>
         <button
           className="navbar-toggler"
           type="button"
@@ -21,8 +28,6 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
-            </li>
-            <li className="nav-item">
               <Link className="nav-link" to="/registrar-propietario">Registrar Propietario</Link>
             </li>
             <li className="nav-item">
@@ -33,6 +38,12 @@ const Navbar = () => {
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/registrar-examen-clinico">Registrar Examen Clínico</Link>
+            </li>
+            {/* 📌 Nueva opción para salir */}
+            <li className="nav-item">
+              <button className="nav-link btn btn-danger text-white" onClick={handleLogout}>
+                Salir
+              </button>
             </li>
           </ul>
         </div>

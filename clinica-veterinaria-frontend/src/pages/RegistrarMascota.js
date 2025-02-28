@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify"; // Importar react-toastify
-import { FaPaw, FaClinicMedical, FaCalendarAlt } from "react-icons/fa"; // 🔹 Iconos
 import api from "../api";
-//import "../Styles/RegistrarMascota.css";
+import Sidebar from "../components/Sidebar"; // 🔹 Importamos Sidebar
+import "../Styles/RegistrarMascota.css";
 
 const RegistrarMascota = () => {
   // 🔹 Función para navegar a Home.js con la pestaña seleccionada
-  const goToHome = (tab) => {
-    navigate(`/?tab=${tab}&forceTab=true`); // 🔹 Agrega el parámetro "forceTab"
-  };
 
   const navigate = useNavigate();
   const [mascota, setMascota] = useState({
@@ -97,20 +94,7 @@ const RegistrarMascota = () => {
 
   return (
     <div className="dashboard-container">
-      {/* 📌 Sidebar con Mascotas y Clínica */}
-      <nav className="sidebar">
-        <ul>
-          <li onClick={() => goToHome("clinica")}>
-            <FaClinicMedical /> Información Clínica
-          </li>
-          <li onClick={() => goToHome("mascotas")}>
-            <FaPaw /> Mascotas
-          </li>
-          <li onClick={() => goToHome("calendario")}>
-            <FaCalendarAlt /> Calendario
-          </li>
-        </ul>
-      </nav>
+      <Sidebar /> {/* 📌 Usamos el nuevo Sidebar */}
 
       <div className="container mt-5">
         <div className="card shadow-lg p-4">

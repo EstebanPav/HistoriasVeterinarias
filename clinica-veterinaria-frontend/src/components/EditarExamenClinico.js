@@ -2,18 +2,13 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 //import "../Styles/EditarExamenClinico.css";
-import { FaPaw, FaClinicMedical, FaCalendarAlt } from "react-icons/fa";
+import Sidebar from "../components/Sidebar"; // ✅ Sidebar integrado
 
 
 const EditarExamenClinico = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [examenClinico, setExamenClinico] = useState(null);
-
-    const goToHome = (tab) => {
-      navigate(`/?tab=${tab}&forceTab=true`); // 🔹 Agrega el parámetro "forceTab"
-    };
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -46,20 +41,8 @@ const EditarExamenClinico = () => {
 
     return (
       <div className="dashboard-container">
-            {/* 📌 Sidebar con Mascotas y Clínica */}
-            <nav className="sidebar">
-              <ul>
-                <li onClick={() => goToHome("clinica")}>
-                  <FaClinicMedical /> Información Clínica
-                </li>
-                <li onClick={() => goToHome("mascotas")}>
-                  <FaPaw /> Mascotas
-                </li>
-                <li onClick={() => goToHome("calendario")}>
-                  <FaCalendarAlt /> Calendario
-                </li>
-              </ul>
-            </nav>
+            {/* 📌 Sidebar correctamente integrado */}
+      <Sidebar />
         <div className="editar-examen-container">
             <h2>✏️ Editar Examen Clínico</h2>
             <form onSubmit={handleSubmit}>

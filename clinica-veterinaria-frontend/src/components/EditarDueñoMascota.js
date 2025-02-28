@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-//import "../Styles/EditarDueñoMascota.css"; // Asegúrate de enlazar el CSS
-import {FaPaw,FaClinicMedical,FaCalendarAlt} from "react-icons/fa";
+import "../Styles/EditarDueñoMascota.css"; // Asegúrate de enlazar el CSS
+import Sidebar from "../components/Sidebar"; // ✅ Sidebar integrado
 const EditarDueñoMascota = () => {
   const { id } = useParams(); // Capturar el ID del propietario
   const navigate = useNavigate();
@@ -14,11 +14,6 @@ const EditarDueñoMascota = () => {
     cedula: "",
     celular: "",
   });
-
-  const goToHome = (tab) => {
-    navigate(`/?tab=${tab}&forceTab=true`); // 🔹 Agrega el parámetro "forceTab"
-  };
-
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -54,20 +49,8 @@ const EditarDueñoMascota = () => {
   return (
 
     <div className="dashboard-container">
-          {/* 📌 Sidebar con Mascotas y Clínica */}
-          <nav className="sidebar">
-            <ul>
-              <li onClick={() => goToHome("clinica")}>
-                <FaClinicMedical /> Información Clínica
-              </li>
-              <li onClick={() => goToHome("mascotas")}>
-                <FaPaw /> Mascotas
-              </li>
-              <li onClick={() => goToHome("calendario")}>
-                <FaCalendarAlt /> Calendario
-              </li>
-            </ul>
-          </nav>
+        {/* 📌 Sidebar correctamente integrado */}
+      <Sidebar />
 
     <div className="editar-container">
       <h2>✏️ Editar Propietario</h2>

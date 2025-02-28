@@ -1,0 +1,151 @@
+/* 📌 Contenedor principal */
+.propietario-container {
+    display: flex;
+    justify-content: center; /* Centrar el contenido */
+    align-items: flex-start;
+    min-height: 100vh;
+    background-color: #f4f4f4;
+    padding-left: 260px; /* Ajuste para la sidebar */
+    padding-top: 80px; /* Espacio para la navbar */
+}
+
+/* 📌 Contenido Principal */
+.ver-propietario-content {
+    width: 100%;
+    max-width: 800px; /* Hace la tabla más pequeña */
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    margin: auto; /* Centrar la tabla */
+}
+
+/* 📌 Título */
+.ver-propietario-content h2 {
+    text-align: center;
+    font-size: 22px;
+    color: #212537;
+}
+
+/* 📌 Selector de mascotas */
+#mascotaSelect {
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 15px;
+}
+
+/* 📌 Contenedor de búsqueda */
+.search-container {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.search-icon {
+    color: #666;
+    margin-right: 5px;
+}
+
+.search-container input {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 14px;
+}
+
+/* 📌 Contenedor de la tabla */
+.tabla-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.tabla-container h3 {
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+/* 📌 Tabla de propietarios */
+.propietario-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.propietario-table th {
+    background: #212537;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+}
+
+.propietario-table td {
+    padding: 8px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.propietario-table tbody tr:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* 📌 Botón de acciones */
+.btn-warning {
+    background: #ffc107;
+    border: none;
+    padding: 6px 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn-warning:hover {
+    background: #e0a800;
+}
+
+/* 📌 Ajuste responsivo */
+@media (max-width: 1200px) {
+    .propietario-container {
+        padding-left: 220px; /* Ajuste de espacio en sidebar */
+    }
+
+    .ver-propietario-content {
+        max-width: 700px;
+    }
+}
+
+@media (max-width: 768px) {
+    .propietario-container {
+        flex-direction: column;
+        align-items: center;
+        padding-left: 0;
+        padding-top: 100px;
+    }
+
+    .ver-propietario-content {
+        width: 90%;
+        max-width: 100%;
+        padding: 15px;
+    }
+
+    .propietario-table th, .propietario-table td {
+        font-size: 12px;
+        padding: 6px;
+    }
+
+    .btn-warning {
+        font-size: 12px;
+        padding: 5px 8px;
+    }
+}

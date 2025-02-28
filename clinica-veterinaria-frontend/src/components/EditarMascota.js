@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { FaPaw, FaClinicMedical, FaCalendarAlt } from "react-icons/fa"; // 🔹 Iconos
+import Sidebar from "../components/Sidebar"; // ✅ Sidebar integrado
 import "../Styles/EditarMascota.css"; // 🔹 Importamos el CSS mejorado
 
 const EditarMascota = () => {
@@ -10,11 +10,6 @@ const EditarMascota = () => {
   const [mascota, setMascota] = useState(null);
   const [mascotas, setMascotas] = useState([]);
   const [propietarios, setPropietarios] = useState([]);
-
-  // 🔹 Redirigir a Home.js con la pestaña seleccionada
-  const goToHome = (tab) => {
-    navigate(`/?tab=${tab}&forceTab=true`);
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,20 +60,8 @@ const EditarMascota = () => {
 
   return (
     <div className="dashboard-container">
-      {/* 📌 Sidebar con Mascotas y Clínica */}
-      <nav className="sidebar">
-        <ul>
-          <li onClick={() => goToHome("clinica")}>
-            <FaClinicMedical /> Información Clínica
-          </li>
-          <li onClick={() => goToHome("mascotas")}>
-            <FaPaw /> Mascotas
-          </li>
-          <li onClick={() => goToHome("calendario")}>
-            <FaCalendarAlt /> Calendario
-          </li>
-        </ul>
-      </nav>
+      {/* 📌 Sidebar correctamente integrado */}
+      <Sidebar />
       {/* 📌 Contenedor de edición */}
       <div className="edit-container">
         <h2 className="edit-title">Editar Mascota</h2>

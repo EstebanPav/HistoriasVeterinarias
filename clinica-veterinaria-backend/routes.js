@@ -23,38 +23,84 @@ const verificarToken = (req, res, next) => {
     });
 };
 
-// 📌 **LOGIN** (Autenticación con JWT y bcrypt)
+// 📌 **Registrar un usuario o veterinario**
+router.post("/api/registrar-usuario", async (req, res) => {
+    try {
+        const { nombre, correo, contrasena, celular, rol } = req.body;
+
+        // 📌 Verificar que todos los campos sean proporcionados
+        if (!nombre || !correo || !contrasena || !rol) {
+            return res.status(400).json({ message: "Todos los campos son obligatorios." });
+        }
+
+        // 📌 Verificar si el usuario ya existe
+        const [usuarioExistente] = await db.query("SELECT id FROM usuarios WHERE correo = ?", [correo]);
+        if (usuarioExistente.length > 0) {
+            return res.status(409).json({ message: "El correo ya está registrado." });
+        }
+
+        // 🔐 Hashear la contraseña antes de guardarla
+        const hashedPassword = await bcrypt.hash(contrasena, saltRounds);
+
+        // 📌 Insertar usuario en la base de datos
+        const sql = `INSERT INTO usuarios (nombre, correo, contrasena, celular, rol) VALUES (?, ?, ?, ?, ?)`;
+        const [result] = await db.query(sql, [nombre, correo, hashedPassword, celular, rol]);
+
+        res.status(201).json({
+            message: "Usuario registrado correctamente",
+            usuarioId: result.insertId
+        });
+
+    } catch (error) {
+        console.error("❌ Error en el registro:", error);
+        res.status(500).json({ message: "Error interno del servidor" });
+    }
+});
+
+
+
 router.post("/api/login", async (req, res) => {
     try {
         const { correo, contrasena } = req.body;
-        const sql = "SELECT * FROM usuarios WHERE correo = ?";
-        const [results] = await db.query(sql, [correo]);
 
+        // 📌 Buscar el usuario por correo
+        const [results] = await db.query("SELECT * FROM usuarios WHERE correo = ?", [correo]);
         if (results.length === 0) {
             return res.status(401).json({ message: "Usuario no encontrado" });
         }
 
         const usuario = results[0];
 
-        // 📌 Comparar contraseñas encriptadas
+        // 🔐 Comparar contraseñas encriptadas
         const isMatch = await bcrypt.compare(contrasena, usuario.contrasena);
         if (!isMatch) {
             return res.status(401).json({ message: "Contraseña incorrecta" });
         }
 
-        // 📌 Crear Token JWT
+        // 📌 Generar Token JWT
         const token = jwt.sign(
             { id: usuario.id, nombre: usuario.nombre, rol: usuario.rol },
             process.env.JWT_SECRET,
-            { expiresIn: "1h" }
+            { expiresIn: "2h" } // 🔐 Token expira en 2 horas
         );
 
-        res.json({ token, usuario: { id: usuario.id, nombre: usuario.nombre, rol: usuario.rol } });
+        res.json({
+            message: "Inicio de sesión exitoso",
+            token,
+            usuario: {
+                id: usuario.id,
+                nombre: usuario.nombre,
+                correo: usuario.correo,
+                rol: usuario.rol
+            }
+        });
+
     } catch (error) {
-        console.error("Error en el login:", error);
+        console.error("❌ Error en el login:", error);
         res.status(500).json({ message: "Error interno del servidor" });
     }
 });
+
 
 // 📌 **Registrar un usuario (Administrador)**
 router.post("/api/registro", async (req, res) => {
@@ -84,6 +130,10 @@ router.get("/api/protegido", verificarToken, (req, res) => {
     res.json({ message: "Accediste a una ruta protegida", usuario: req.usuario });
 });
 
+
+
+
+
 router.get('/api/propietario/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -94,6 +144,8 @@ router.get('/api/propietario/:id', async (req, res) => {
         res.status(500).json({ error: "Error al obtener el propietario" });
     }
 });
+
+
 
 router.get("/api/ver_propietario/:id", async (req, res) => {
     const { id } = req.params;
@@ -1131,9 +1183,5 @@ router.put("/api/editar_cita/:id", async (req, res) => {
         res.status(500).json({ error: "❌ Error al actualizar la cita." });
     }
 });
-
-
-
-
 
 module.exports = router;

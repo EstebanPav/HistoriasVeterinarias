@@ -4,7 +4,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import esLocale from "@fullcalendar/core/locales/es"; 
 import axios from "axios";
-import { FaPaw, FaClinicMedical, FaCalendarAlt } from 'react-icons/fa';
+import Sidebar from "../components/Sidebar"; // ✅ Sidebar integrado
 import { useNavigate } from 'react-router-dom';
 import "../Styles/VerCitas.css";
 import CitaDetalles from "../components/CitaDetalles"; // 📌 Importamos la card
@@ -15,12 +15,7 @@ const VerCitas = () => {
     const [error, setError] = useState("");
     const [citaSeleccionada, setCitaSeleccionada] = useState(null);
     const navigate = useNavigate();
-
-    // 🔹 Función para navegar entre pestañas
-    const goToHome = (tab) => {
-        navigate(`/?tab=${tab}&forceTab=true`);
-    };
-
+    
     useEffect(() => {
         const fetchCitas = async () => {
             try {
@@ -71,20 +66,8 @@ const VerCitas = () => {
     return (
         <div className="dashboard-container">
             {/* 📌 Sidebar */}
-            <nav className="sidebar">
-                <ul>
-                    <li onClick={() => goToHome("clinica")}>
-                        <FaClinicMedical /> Información Clínica
-                    </li>
-                    <li onClick={() => goToHome("mascotas")}>
-                        <FaPaw /> Mascotas
-                    </li>
-                    <li onClick={() => goToHome("calendario")}>
-                        <FaCalendarAlt /> Calendario
-                    </li>
-                </ul>
-            </nav>
-
+            {/* 📌 Sidebar correctamente integrado */}
+      <Sidebar />
             <div className="ver-citas-container">
                 <h2>📅 Calendario de Citas</h2>
 

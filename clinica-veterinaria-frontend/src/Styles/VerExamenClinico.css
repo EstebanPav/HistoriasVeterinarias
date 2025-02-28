@@ -1,23 +1,23 @@
 /* 📌 Contenedor principal */
 .dashboard-container {
     display: flex;
-    justify-content: center; /* Centrar el contenido */
+    justify-content: center;
     align-items: flex-start;
     min-height: 100vh;
     background-color: #f4f4f4;
-    padding-left: 270px; /* 🔹 Ajuste extra para separar de la sidebar */
+    padding-left: 270px; /* 🔹 Ajuste para que no se solape con la sidebar */
     padding-top: 80px; /* 🔹 Espacio para la navbar */
 }
 
 /* 📌 Contenedor del historial clínico */
 .historia-container {
     width: 100%;
-    max-width: 1200px; /* 🔹 Mantiene la tabla compacta */
+    max-width: 1200px; /* 🔹 Espacio suficiente para la tabla */
     background: white;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    margin: 0 auto; /* 🔹 Centrar horizontalmente */
+    margin: 0 auto;
 }
 
 /* 📌 Título */
@@ -49,11 +49,6 @@
     width: 100%;
 }
 
-.search-icon {
-    color: #666;
-    margin-right: 5px;
-}
-
 .search-container input {
     width: 100%;
     border: none;
@@ -61,17 +56,17 @@
     font-size: 14px;
 }
 
-/* 📌 Contenedor de la tabla con scroll */
+/* 📌 Contenedor de la tabla con scroll horizontal */
 .tabla-container {
     width: 100%;
     overflow-x: auto; /* 🔹 Activa el scroll horizontal */
-    white-space: nowrap; /* 🔹 Evita que las celdas salten de línea */
-    padding-bottom: 10px; /* 🔹 Espacio extra para mejor visualización */
+    white-space: nowrap; /* 🔹 Mantiene el contenido en una sola línea */
+    padding-bottom: 10px;
 }
 
 /* 📌 Estilos de la tabla */
 .historia-table {
-    width: max-content; /* 🔹 La tabla ocupará solo el espacio necesario */
+    width: max-content; /* 🔹 Ajuste para que la tabla solo ocupe lo necesario */
     border-collapse: collapse;
     background: white;
 }
@@ -92,7 +87,7 @@
     text-align: center;
     border-bottom: 1px solid #ddd;
     font-size: 14px;
-    white-space: nowrap; /* 🔹 Mantiene el texto en una línea */
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }

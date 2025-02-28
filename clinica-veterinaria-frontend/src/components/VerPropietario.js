@@ -2,12 +2,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import {
-  FaPaw,
-  FaClinicMedical,
-  FaCalendarAlt,
   FaSearch,
 } from "react-icons/fa";
-//import "../Styles/VerPropietarios.css"; // Enlazar el CSS
+import "../Styles/VerPropietarios.css"; // Enlazar el CSS
+import Sidebar from "../components/Sidebar"; // ✅ Sidebar integrado
 
 const VerPropietario = () => {
   const { id } = useParams();
@@ -78,23 +76,10 @@ const VerPropietario = () => {
 
   return (
     <div className="propietario-container">
-      {/* Sidebar */}
-      <nav className="sidebar">
-        <ul>
-          <li onClick={() => navigate("/?tab=clinica")}>
-            <FaClinicMedical /> Información Clínica
-          </li>
-          <li onClick={() => navigate("/?tab=mascotas")}>
-            <FaPaw /> Mascotas
-          </li>
-          <li onClick={() => navigate("/?tab=calendario")}>
-            <FaCalendarAlt /> Calendario
-          </li>
-        </ul>
-      </nav>
-
+      {/* 📌 Sidebar correctamente integrado */}
+      <Sidebar />
       <div className="ver-propietario-content">
-        <h2>🏠 Ver Propietario</h2>
+        <h2>🏠 Ver Dueño de Mascota</h2>
 
         <label htmlFor="mascotaSelect">Selecciona una mascota:</label>
         <select

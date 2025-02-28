@@ -1,15 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import "../Styles/ExamenClinico.css"; // CSS específico para el formulario
-import { FaPaw, FaClinicMedical, FaCalendarAlt } from "react-icons/fa"; // 🔹 Iconos
+import Sidebar from "../components/Sidebar"; // 🔹 Importamos Sidebar
+
 
 const RegistrarExamenClinico = () => {
-  const navigate = useNavigate(); // 🔹 Para redireccionar a Home con pestaña seleccionada
-  // 🔹 Función para navegar a Home.js con la pestaña seleccionada
-  const goToHome = (tab) => {
-    navigate(`/?tab=${tab}&forceTab=true`); // 🔹 Agrega el parámetro "forceTab"
-  };
   const [mascotas, setMascotas] = useState([]);
   const [formData, setFormData] = useState({
     mascota_id: "",
@@ -123,20 +118,7 @@ const RegistrarExamenClinico = () => {
 
   return (
     <div className="dashboard-container">
-      {/* 📌 Sidebar con Mascotas y Clínica */}
-      <nav className="sidebar">
-        <ul>
-          <li onClick={() => goToHome("clinica")}>
-            <FaClinicMedical /> Información Clínica
-          </li>
-          <li onClick={() => goToHome("mascotas")}>
-            <FaPaw /> Mascotas
-          </li>
-          <li onClick={() => goToHome("calendario")}>
-            <FaCalendarAlt /> Calendario
-          </li>
-        </ul>
-      </nav>
+      <Sidebar /> {/* 📌 Usamos el nuevo Sidebar */}
       <div className="form-container">
         <form onSubmit={handleSubmit}>
           {error && <p className="error-message">{error}</p>}

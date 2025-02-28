@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/es";
 import axios from "axios";
 import "../Styles/Calendario.css";
+import Sidebar from "../components/Sidebar"; // 🔹 Importamos Sidebar
 
 const Calendario = () => {
     dayjs.locale("es");
@@ -73,6 +74,8 @@ const Calendario = () => {
     };
 
     return (
+        <div className="dashboard-container">
+        <Sidebar /> {/* 📌 Usamos el nuevo Sidebar */}
         <div className="calendario-container">
             <h2>📅 Agendar una Cita</h2>
 
@@ -127,6 +130,7 @@ const Calendario = () => {
             </form>
 
             {message && <p className="message">{message}</p>}
+        </div>
         </div>
     );
 };

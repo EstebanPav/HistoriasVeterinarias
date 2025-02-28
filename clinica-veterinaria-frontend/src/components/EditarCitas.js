@@ -6,6 +6,8 @@ import "dayjs/locale/es";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import Sidebar from "../components/Sidebar"; // 📌 Importamos Sidebar
+import "../Styles/EditarCita.css"; // 📌 Aseguramos que el CSS esté bien aplicado
 
 const EditarCita = () => {
     const { id } = useParams();
@@ -92,66 +94,70 @@ const EditarCita = () => {
     };
 
     return (
-        <div className="editar-cita-container">
-            <h2>📅 Editar Cita Clínica</h2>
+        <div className="dashboard-container">
+            <Sidebar /> {/* 📌 Sidebar alineada correctamente al costado */}
 
-            {loading ? (
-                <p>Cargando datos...</p>
-            ) : (
-                <form onSubmit={handleSubmit} className="editar-form">
-                    <label>📅 Fecha y Hora:</label>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DateTimePicker
-                            label="Selecciona nueva fecha y hora"
-                            value={fechaHora}
-                            onChange={(newValue) => setFechaHora(newValue)}
-                            disablePast
-                        />
-                    </LocalizationProvider>
+            <div className="editar-cita-content">
+                <h2 className="editar-cita-title">📅 Editar Cita Clínica</h2>
 
-                    <label>📝 Motivo:</label>
-                    <textarea 
-                        value={motivo} 
-                        onChange={(e) => setMotivo(e.target.value)}
-                    ></textarea>
+                {loading ? (
+                    <p className="loading-message">Cargando datos...</p>
+                ) : (
+                    <form onSubmit={handleSubmit} className="editar-cita-form">
+                        <label>📅 Fecha y Hora:</label>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DateTimePicker
+                                label="Selecciona nueva fecha y hora"
+                                value={fechaHora}
+                                onChange={(newValue) => setFechaHora(newValue)}
+                                disablePast
+                            />
+                        </LocalizationProvider>
 
-                    <label>🐶 Mascota:</label>
-                    <select value={mascotaId} onChange={(e) => setMascotaId(e.target.value)}>
-                        <option value="">Seleccione una mascota</option>
-                        {mascotas.map((m) => (
-                            <option key={m.id} value={m.id}>{m.nombre}</option>
-                        ))}
-                    </select>
+                        <label>📝 Motivo:</label>
+                        <textarea 
+                            value={motivo} 
+                            onChange={(e) => setMotivo(e.target.value)}
+                        ></textarea>
 
-                    <label>👤 Propietario:</label>
-                    <select value={propietarioId} onChange={(e) => setPropietarioId(e.target.value)}>
-                        <option value="">Seleccione un propietario</option>
-                        {propietarios.map((p) => (
-                            <option key={p.id} value={p.id}>{p.nombre}</option>
-                        ))}
-                    </select>
+                        <label>🐶 Mascota:</label>
+                        <select value={mascotaId} onChange={(e) => setMascotaId(e.target.value)}>
+                            <option value="">Seleccione una mascota</option>
+                            {mascotas.map((m) => (
+                                <option key={m.id} value={m.id}>{m.nombre}</option>
+                            ))}
+                        </select>
 
-                    <label>👨‍⚕️ Veterinario:</label>
-                    <select value={veterinarioId} onChange={(e) => setVeterinarioId(e.target.value)}>
-                        <option value="">Seleccione un veterinario</option>
-                        {veterinarios.map((v) => (
-                            <option key={v.id} value={v.id}>{v.nombre}</option>
-                        ))}
-                    </select>
+                        <label>👤 Propietario:</label>
+                        <select value={propietarioId} onChange={(e) => setPropietarioId(e.target.value)}>
+                            <option value="">Seleccione un propietario</option>
+                            {propietarios.map((p) => (
+                                <option key={p.id} value={p.id}>{p.nombre}</option>
+                            ))}
+                        </select>
 
-                    <label>📌 Estado de la Cita:</label>
-                    <select value={estado} onChange={(e) => setEstado(e.target.value)}>
-                        <option value="Pendiente">Pendiente</option>
-                        <option value="Confirmada">Confirmada</option>
-                        <option value="Cancelada">Cancelada</option>
-                    </select>
+                        <label>👨‍⚕️ Veterinario:</label>
+                        <select value={veterinarioId} onChange={(e) => setVeterinarioId(e.target.value)}>
+                            <option value="">Seleccione un veterinario</option>
+                            {veterinarios.map((v) => (
+                                <option key={v.id} value={v.id}>{v.nombre}</option>
+                            ))}
+                        </select>
 
-                    <button type="submit">💾 Guardar Cambios</button>
-                    <button type="button" onClick={() => navigate("/ver-citas")}>❌ Cancelar</button>
-                </form>
-            )}
+                        <label>📌 Estado de la Cita:</label>
+                        <select value={estado} onChange={(e) => setEstado(e.target.value)}>
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="Confirmada">Confirmada</option>
+                            <option value="Cancelada">Cancelada</option>
+                        </select>
 
-            {message && <p className="message">{message}</p>}
+                        <button type="submit" className="btn-guardar">💾 Guardar Cambios</button>
+                        <button type="button" className="btn-cancelar" onClick={() => navigate("/ver-citas")}>❌ Cancelar</button>
+                    </form>
+                )}
+
+                {message && <p className="message">{message}</p>}
+            </div>
         </div>
     );
 };

@@ -1,19 +1,12 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import api from "../api";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { FaPaw, FaClinicMedical, FaCalendarAlt } from "react-icons/fa"; // 🔹 Iconos
 import "bootstrap/dist/css/bootstrap.min.css";
+import Sidebar from "../components/Sidebar"; // 🔹 Importamos Sidebar
 import "../Styles/RegistrarPropietario.css"; // 📌 Importamos el nuevo CSS
 
 const RegistrarPropietario = () => {
-  const navigate = useNavigate();
-
-  // 🔹 Redirigir a Home.js con la pestaña seleccionada
-  const goToHome = (tab) => {
-    navigate(`/?tab=${tab}`);
-  };
 
   const [propietario, setPropietario] = useState({
     nombre: "",
@@ -69,21 +62,7 @@ const RegistrarPropietario = () => {
 
   return (
     <div className="dashboard-container">
-      {/* 📌 Sidebar con Mascotas y Clínica */}
-      <nav className="sidebar">
-        <ul>
-          <li onClick={() => goToHome("clinica")}>
-            <FaClinicMedical /> Información Clínica
-          </li>
-          <li onClick={() => goToHome("mascotas")}>
-            <FaPaw /> Mascotas
-          </li>
-          <li onClick={() => goToHome("calendario")}>
-            <FaCalendarAlt /> Calendario
-          </li>
-        </ul>
-      </nav>
-
+        <Sidebar /> {/* 📌 Usamos el nuevo Sidebar */}
       {/* 📌 Contenedor del formulario */}
       <div className="registro-container">
         <div className="registro-card">

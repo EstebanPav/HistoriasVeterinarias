@@ -2,17 +2,13 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import "../Styles/EditarHistoriaClinica.css"; // Archivo CSS mejorado
-import { FaPaw, FaClinicMedical, FaCalendarAlt } from 'react-icons/fa';
+import Sidebar from "../components/Sidebar"; // ✅ Sidebar integrado
 
 const EditarHistoriaClinica = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [historiaClinica, setHistoriaClinica] = useState(null);
     const [veterinarios, setVeterinarios] = useState([]);
-        // 🔹 Función para navegar entre pestañas
-        const goToHome = (tab) => {
-            navigate(`/?tab=${tab}&forceTab=true`);
-        };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -49,20 +45,8 @@ const EditarHistoriaClinica = () => {
 
     return (
          <div className="dashboard-container">
-                    {/* 📌 Sidebar */}
-                    <nav className="sidebar">
-                        <ul>
-                            <li onClick={() => goToHome("clinica")}>
-                                <FaClinicMedical /> Información Clínica
-                            </li>
-                            <li onClick={() => goToHome("mascotas")}>
-                                <FaPaw /> Mascotas
-                            </li>
-                            <li onClick={() => goToHome("calendario")}>
-                                <FaCalendarAlt /> Calendario
-                            </li>
-                        </ul>
-                    </nav>
+                   {/* 📌 Sidebar correctamente integrado */}
+      <Sidebar />
         
         <div className="editar-historia-container">
             <h2>✏️ Editar Historia Clínica</h2>

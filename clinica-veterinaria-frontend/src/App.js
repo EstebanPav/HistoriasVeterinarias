@@ -1,15 +1,16 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
+import Login from "./pages/Login";
 import Home from './pages/Home';
 import RegistrarPropietario from './pages/RegistrarPropietario';
 import RegistrarMascota from './pages/RegistrarMascota';
 import RegistrarHistoriaClinica from './pages/RegistrarHistoriaClinica';
 import RegistrarExamenClinico from './pages/RegistrarExamenClinicos';
 import Navbar from './components/Navbar';
-import MascotasTable from "./pages/MascotasTable";
+import MascotasTable from "./pages/MascotasTable"; // ✅ Importar tabla de mascotas
 import EditarMascota from "./components/EditarMascota";
 import Calendario from "./components/Calendario";
 import VerCitas from "./components/VerCitas";
@@ -21,16 +22,20 @@ import EditarHistoriaClinica from "./components/EditarHistoriaClinica";
 import EditarExamenClinico from './components/EditarExamenClinico';
 import VerExamenClinico from "./components/VerExamenClinico";
 import EditarDueñoMascota from "./components/EditarDueñoMascota";
+
+// 📌 Middleware para proteger rutas privadas
+const PrivateRoute = ({ element }) => {
+    const token = localStorage.getItem("token");
+    return token ? element : <Navigate to="/login" />;
+};
+
 const App = () => {
     return (
         <Router>
-            {/* Navbar aparece en todas las páginas */}
             <Navbar />
-
-            {/* ToastContainer para mostrar notificaciones en toda la app */}
             <ToastContainer 
                 position="top-right"
-                autoClose={3000} // Cierra el toast después de 3 segundos
+                autoClose={3000}
                 hideProgressBar={false}
                 newestOnTop={true}
                 closeOnClick
@@ -42,25 +47,30 @@ const App = () => {
             />
 
             <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/registrar-propietario" element={<RegistrarPropietario />} />
-                <Route path="/registrar-mascota" element={<RegistrarMascota />} />
-                <Route path="/registrar-historia/:mascotaId" element={<RegistrarHistoriaClinica />} />
-                <Route path="/registrar-examen-clinico" element={<RegistrarExamenClinico />} />
-                <Route path="/" element={<MascotasTable />} />
-                <Route path="/editar-mascota/:id" element={<EditarMascota/>} />
-                <Route path="/" element={<Calendario />} />
-                <Route path="/ver-citas" element={<VerCitas />} />
-                <Route path="/editar-cita/:id" element={<EditarCita />} />
-                <Route path="/notificar-cita/:id" element={<NotificarCita/>} />
-                <Route path="/ver-propietario" element={<VerPropietario />} />
-                <Route path="/editar-propietario/:id" element={<EditarDueñoMascota />} />
-                <Route path="/ver-historia-clinica" element={<VerHistoriaClinica />} />
-                <Route path="/ver-examen-clinico" element={<VerExamenClinico />} />
-                <Route path="/editar-historia-clinica/:id" element={<EditarHistoriaClinica />} />
-                <Route path="/editar-examen-clinico/:id" element={<EditarExamenClinico />} />
-                
-                
+                {/* Login */}
+                <Route path="/login" element={<Login />} />
+
+                {/* Rutas privadas con Sidebar */}
+                <Route path="/home" element={<PrivateRoute element={<Home />} />} />
+                <Route path="/registrar-propietario" element={<PrivateRoute element={<RegistrarPropietario />} />} />
+                <Route path="/registrar-mascota" element={<PrivateRoute element={<RegistrarMascota />} />} />
+                <Route path="/registrar-historia/:mascotaId" element={<PrivateRoute element={<RegistrarHistoriaClinica />} />} />
+                <Route path="/ver-mascotas" element={<PrivateRoute element={<MascotasTable />} />} />  {/* ✅ Nueva Ruta */}
+                <Route path="/registrar-examen-clinico" element={<PrivateRoute element={<RegistrarExamenClinico />} />} />
+                <Route path="/ver-citas" element={<PrivateRoute element={<VerCitas />} />} />
+                <Route path="/editar-cita/:id" element={<PrivateRoute element={<EditarCita />} />} />
+                <Route path="/calendario" element={<PrivateRoute element={<Calendario />} />} />
+                <Route path="/editar-mascota/:id" element={<PrivateRoute element={<EditarMascota/>} />} />
+                <Route path="/notificar-cita/:id" element={<PrivateRoute element={<NotificarCita />} />} />
+                <Route path="/ver-propietario" element={<PrivateRoute element={<VerPropietario />} />} />
+                <Route path="/editar-propietario/:id" element={<PrivateRoute element={<EditarDueñoMascota />} />} />
+                <Route path="/ver-historia-clinica" element={<PrivateRoute element={<VerHistoriaClinica />} />} />
+                <Route path="/ver-examen-clinico" element={<PrivateRoute element={<VerExamenClinico />} />} />
+                <Route path="/editar-historia-clinica/:id" element={<PrivateRoute element={<EditarHistoriaClinica />} />} />
+                <Route path="/editar-examen-clinico/:id" element={<PrivateRoute element={<EditarExamenClinico />} />} />
+
+                {/* Redirigir a /login si no está autenticado */}
+                <Route path="*" element={<Navigate to="/login" />} />
             </Routes>
         </Router>
     );
