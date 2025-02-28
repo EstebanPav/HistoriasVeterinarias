@@ -24,9 +24,13 @@ const ClinicaInfo = () => {
         <div className="clinica-container">
             <div className="clinica-card">
                 <img src={clinica.logo_url} alt="Logo de la clínica" className="clinica-logo" />
-                <h1>{clinica.nombre}</h1>
-                <p><strong>📍 Dirección:</strong> {clinica.direccion}</p>
-                <p><strong>📞 Teléfonos:</strong> {clinica.numeros_contacto}</p>
+                <h2 className="clinica-nombre">{clinica.nombre}</h2>
+
+                <div className="clinica-info">
+                    <p><strong>📍 Dirección:</strong> {clinica.direccion}</p>
+                    <p><strong>📞 Teléfonos:</strong> {clinica.numeros_contacto}</p>
+                </div>
+
                 <h3 className="clinica-eslogan">"{clinica.eslogan}"</h3>
             </div>
         </div>
