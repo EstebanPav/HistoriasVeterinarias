@@ -386,24 +386,27 @@ router.put('/api/mascotas/:id', async (req, res) => {
     }
 });
 
-// Eliminar una mascota por ID
-router.delete('/api/mascotas/:id', async (req, res) => {
+// 📌 Eliminar Mascota por ID
+router.delete("/eliminar/mascotas/:id", async (req, res) => {
     const { id } = req.params;
 
     try {
-        const [result] = await db.query(`DELETE FROM mascotas WHERE id = ?`, [id]);
+        // 🔹 Verificar si la mascota existe
+        const [result] = await db.query("SELECT * FROM mascotas WHERE id = ?", [id]);
 
-        if (result.affectedRows > 0) {
-            res.status(200).json({ message: "Mascota eliminada correctamente" });
-        } else {
-            res.status(404).json({ error: "Mascota no encontrada" });
+        if (result.length === 0) {
+            return res.status(404).json({ message: "Mascota no encontrada" });
         }
+
+        // 🔹 Eliminar mascota
+        await db.query("DELETE FROM mascotas WHERE id = ?", [id]);
+
+        return res.status(200).json({ message: "✅ Mascota eliminada correctamente" });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Error al eliminar la mascota" });
+        console.error("❌ Error al eliminar mascota:", error);
+        return res.status(500).json({ message: "❌ Error interno del servidor" });
     }
 });
-
 // ==================== HISTORIAS CLÍNICAS ====================
 /**
  * Obtener todas las historias clínicas

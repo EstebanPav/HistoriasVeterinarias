@@ -1,23 +1,46 @@
 import React from "react";
 import { FaTimes, FaEdit, FaTrash } from "react-icons/fa";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const MascotaDetalles = ({ mascota, onClose, onDelete }) => {
   const navigate = useNavigate();
 
-  if (!mascota) return null; // No mostrar el modal si no hay una mascota seleccionada
+  if (!mascota || !mascota.id) {
+    console.error("❌ Error: Mascota no válida o sin ID", mascota);
+    return null;
+  }
 
+  
+  // 🔹 Función para eliminar una historia clínica
+  const handleEliminarMascota = async (mascotaId) => {
+    const confirmacion = window.confirm("¿Estás seguro de que deseas eliminar esta mascota?");
+    if (!confirmacion) return;
+
+    try {
+        const response = await axios.delete(`http://localhost:5000/eliminar/mascotas/${mascota.id}`);
+        if (response.status === 200) {
+            alert("✅ Mascota eliminada correctamente.");
+        } else {
+            alert("❌ No se pudo eliminar la mascota .");
+        }
+    } catch (error) {
+        console.error("❌ Error al eliminar la mascota", error);
+        alert("❌ No se pudo eliminar la mascota");
+    }
+};
+
+  
   return (
     <div className="modal-overlay">
       <div className="modal-content">
         <button className="close-modal" onClick={onClose}>
           <FaTimes />
         </button>
-        <h3>Detalles de la Mascota</h3>
-
         <div className="modal-subtables">
           <div className="subtable">
             <h4>Datos Generales</h4>
+            <p><strong>ID:</strong> {mascota.id}</p> {/* 🔍 Muestra el ID en el modal */}
             <p><strong>Nombre:</strong> {mascota.nombre}</p>
             <p><strong>Especie:</strong> {mascota.especie}</p>
             <p><strong>Raza:</strong> {mascota.raza}</p>
@@ -34,11 +57,10 @@ const MascotaDetalles = ({ mascota, onClose, onDelete }) => {
         </div>
 
         <div className="edit-delete-buttons">
-          {/* 🔹 Cambiado para redirigir a EditarMascota.js con el ID de la mascota */}
           <button className="edit-button" onClick={() => navigate(`/editar-mascota/${mascota.id}`)}>
             <FaEdit /> Editar
           </button>
-          <button className="delete-button" onClick={() => onDelete(mascota.id)}>
+          <button className="delete-button" onClick={handleEliminarMascota}>
             <FaTrash /> Eliminar
           </button>
         </div>
