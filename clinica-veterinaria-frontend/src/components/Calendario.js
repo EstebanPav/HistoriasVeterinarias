@@ -110,12 +110,12 @@ const Calendario = () => {
                 </select>
 
                 <label>Selecciona la Mascota:</label>
-                <select value={mascotaId} onChange={(e) => setMascotaId(e.target.value)} required>
-                    <option value="">Seleccione...</option>
-                    {mascotas.filter((m) => m.propietario_id === Number(propietarioId)).map((m) => (
-                        <option key={m.id} value={m.id}>{m.nombre}</option>
-                    ))}
-                </select>
+                <select value={mascotaId} onChange={(e) => setMascotaId(e.target.value)}>
+                            <option value="">Seleccione una mascota</option>
+                            {mascotas.map((m) => (
+                                <option key={m.id} value={m.id}>{m.nombre}</option>
+                            ))}
+                        </select>
 
                 <label>Selecciona el Veterinario:</label>
                 <select value={veterinarioId} onChange={(e) => setVeterinarioId(e.target.value)} required>
