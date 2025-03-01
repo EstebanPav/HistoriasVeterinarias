@@ -333,22 +333,42 @@ router.post('/api/mascotas', async (req, res) => {
         res.status(500).json({ error: 'Error al registrar la mascota' });
     }
 });
+
 //Obtener Mascota por id
 router.get('/api/mascotas/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const [result] = await db.query('SELECT * FROM mascotas WHERE id = ?', [id]);
+
+        // 🔹 Consulta con JOIN para obtener todos los datos de la mascota + propietario
+        const [result] = await db.query(
+            `SELECT 
+                m.id AS mascota_id, 
+                m.nombre AS mascota_nombre, 
+                m.especie, 
+                m.raza, 
+                m.sexo, 
+                m.color, 
+                m.fecha_nacimiento, 
+                m.edad, 
+                m.propietario_id,
+                p.nombre AS propietario_nombre
+             FROM mascotas m
+             JOIN propietarios p ON m.propietario_id = p.id
+             WHERE m.id = ?`, 
+            [id]
+        );
 
         if (result.length === 0) {
             return res.status(404).json({ error: 'Mascota no encontrada' });
         }
 
-        res.status(200).json(result[0]);
+        res.status(200).json(result[0]); // 🔹 Devuelve todos los datos correctamente
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al obtener la mascota' });
     }
 });
+
 
 router.get('/api/lista-mascotas', async (req, res) => {
     try {
@@ -362,17 +382,17 @@ router.get('/api/lista-mascotas', async (req, res) => {
 
 
 
-// Actualizar una mascota por ID
-router.put('/api/mascotas/:id', async (req, res) => {
+// Actualizar una mascota por ID sin modificar el nombre
+router.put('/api/editar-mascotas/:id', async (req, res) => {
     const { id } = req.params;
-    const { nombre, especie, raza, sexo, color, fecha_nacimiento, edad, propietario_id } = req.body;
+    const { especie, raza, sexo, color, fecha_nacimiento, edad, propietario_id } = req.body;
 
     try {
         const [result] = await db.query(
             `UPDATE mascotas SET 
-            nombre = ?, especie = ?, raza = ?, sexo = ?, color = ?, 
+            especie = ?, raza = ?, sexo = ?, color = ?, 
             fecha_nacimiento = ?, edad = ?, propietario_id = ? WHERE id = ?`,
-            [nombre, especie, raza, sexo, color, fecha_nacimiento, edad, propietario_id, id]
+            [especie, raza, sexo, color, fecha_nacimiento, edad, propietario_id, id]
         );
 
         if (result.affectedRows > 0) {
@@ -1166,14 +1186,14 @@ router.get("/api/ver_cita/:id", async (req, res) => {
 // 📌 Actualizar todos los campos de una cita
 router.put("/api/editar_cita/:id", async (req, res) => {
     const { id } = req.params;
-    const { fecha_hora, motivo, mascota_id, propietario_id, veterinario_id, estado } = req.body;
+    const { fecha_hora, motivo, veterinario_id } = req.body; // 📌 Solo los datos editables
 
     try {
         const [result] = await db.query(
             `UPDATE citas_veterinarias 
-            SET fecha_hora = ?, motivo = ?, mascota_id = ?, propietario_id = ?, veterinario_id = ?, estado = ? 
+            SET fecha_hora = ?, motivo = ?, veterinario_id = ? 
             WHERE id = ?`,
-            [fecha_hora, motivo, mascota_id, propietario_id, veterinario_id, estado, id]
+            [fecha_hora, motivo, veterinario_id, id]
         );
 
         if (result.affectedRows > 0) {
@@ -1186,5 +1206,6 @@ router.put("/api/editar_cita/:id", async (req, res) => {
         res.status(500).json({ error: "❌ Error al actualizar la cita." });
     }
 });
+
 
 module.exports = router;

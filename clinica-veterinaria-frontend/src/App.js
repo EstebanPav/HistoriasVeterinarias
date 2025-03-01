@@ -61,7 +61,7 @@ const App = () => {
                 <Route path="/registrar-examen-clinico" element={<PrivateRoute element={<RegistrarExamenClinico />} />} />
                 <Route path="/ver-citas" element={<PrivateRoute element={<VerCitas />} />} />
                 <Route path="/editar-cita/:id" element={<PrivateRoute element={<EditarCita />} />} />
-                <Route path="/calendario" element={<PrivateRoute element={<Calendario />} />} />
+                <Route path="/registrar-cita/:id" element={<PrivateRoute element={<Calendario />} />} />
                 <Route path="/editar-mascota/:id" element={<PrivateRoute element={<EditarMascota />} />} />
                 <Route path="/notificar-cita/:id" element={<PrivateRoute element={<NotificarCita />} />} />
                 <Route path="/ver-propietario/:id" element={<PrivateRoute element={<VerPropietario />} />} />

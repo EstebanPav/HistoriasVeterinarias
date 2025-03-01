@@ -32,6 +32,7 @@ const CitaDetalles = ({ cita, onClose, onDelete }) => {
         <h2>📅 Detalles de la Cita</h2>
 
         <p><strong>📝 Motivo:</strong> {cita.title ? cita.title.split(" - ")[0] : "No disponible"}</p>
+        <p><strong> 📅 Fecha: </strong> {cita.extendedProps?.fecha_hora || citaDetalles.fecha_hora || "No disponible"}</p>
         <p><strong>🐶 Mascota:</strong> {cita.extendedProps?.mascota || citaDetalles.mascota || "No disponible"}</p>
         <p><strong>👤 Propietario:</strong> {cita.extendedProps?.propietario || citaDetalles.propietario || "No disponible"}</p>
         <p><strong>📞 Contacto:</strong> {cita.extendedProps?.propietario_celular || citaDetalles.propietario_celular || "No disponible"}</p>
