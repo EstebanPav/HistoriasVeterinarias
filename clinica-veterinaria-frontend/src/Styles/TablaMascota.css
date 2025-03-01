@@ -96,23 +96,34 @@ tbody tr:hover {
     background: rgba(0, 0, 0, 0.05);
 }
 
-/* 📌 Paginación */
+/* 📌 Contenedor de Paginación */
 .pagination {
     display: flex;
-    justify-content: center;
+    flex-direction: column; /* 🔹 Organiza los botones y números en columna */
     align-items: center;
+    justify-content: center;
     margin-top: 15px;
+}
+
+/* 📌 Botones "Anterior" y "Siguiente" más largos */
+.pagination-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* 🔹 Espacio entre botones */
+    width: 100%; /* 🔹 Asegura que ocupen todo el ancho disponible */
 }
 
 .pagination-btn {
     background: #212537;
     color: white;
     border: none;
-    padding: 8px 12px;
-    margin: 0 5px;
-    border-radius: 5px;
+    padding: 14px 40px; /* 🔹 Aumenta el tamaño del botón */
+    font-size: 16px; /* 🔹 Tamaño del texto más grande */
+    width: 180px; /* 🔹 Botón más largo */
+    border-radius: 6px;
     cursor: pointer;
     transition: background 0.3s ease;
+    text-align: center;
 }
 
 .pagination-btn:hover {
@@ -122,6 +133,31 @@ tbody tr:hover {
 .pagination-btn:disabled {
     background: #ccc;
     cursor: not-allowed;
+}
+
+/* 📌 Contenedor de los números de página */
+.pagination-numbers {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px; /* 🔹 Espacio entre los botones y los números */
+}
+
+/* 📌 Estilos de los números de página */
+.pagination-number {
+    background: #ddd;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s ease;
+}
+
+/* 📌 Número activo de paginación */
+.pagination-number.active {
+    background: #212537;
+    color: white;
 }
 
 /* 📌 Botón "Ver Propietario" */
@@ -176,6 +212,13 @@ tbody tr:hover {
     .search-input-container {
         width: 80%;
     }
+
+    /* 🔹 Reducir tamaño de los botones en pantallas medianas */
+    .pagination-btn {
+        width: 150px;
+        padding: 12px 30px;
+        font-size: 14px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -200,8 +243,10 @@ tbody tr:hover {
         padding: 5px;
     }
 
+    /* 🔹 Botones de paginación más pequeños en móviles */
     .pagination-btn {
-        padding: 6px 10px;
+        width: 120px;
+        padding: 10px 20px;
         font-size: 12px;
     }
 }

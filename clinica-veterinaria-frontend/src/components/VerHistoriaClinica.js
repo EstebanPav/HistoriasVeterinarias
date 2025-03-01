@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "../Styles/VerHistoriasClinicas.css";
-import { FaSearch } from 'react-icons/fa';
+import { FaSearch, FaArrowLeft } from 'react-icons/fa';
 import Sidebar from "../components/Sidebar"; // ✅ Sidebar integrado
 
 const VerHistoriaClinica = () => {
-    const [mascotas, setMascotas] = useState([]);
-    const [selectedMascota, setSelectedMascota] = useState("");
+    const { id } = useParams(); // Obtener el ID de la mascota desde la URL
     const [historiasClinicas, setHistoriasClinicas] = useState([]);
     const [filteredHistorias, setFilteredHistorias] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -18,34 +17,20 @@ const VerHistoriaClinica = () => {
     const itemsPerPage = 5; // 🔹 Número de registros por página
 
     useEffect(() => {
-        const fetchMascotas = async () => {
+        const fetchHistoriasClinicas = async () => {
             try {
-                const response = await axios.get("http://localhost:5000/api/mascotas");
-                setMascotas(response.data);
+                const response = await axios.get(`http://localhost:5000/api/historia_clinica/${id}`);
+                setHistoriasClinicas(response.data);
+                setFilteredHistorias(response.data);
             } catch (error) {
-                console.error("Error al obtener las mascotas:", error);
+                console.error("Error al obtener las historias clínicas:", error);
             }
         };
-        fetchMascotas();
-    }, []);
 
-    const handleMascotaChange = async (e) => {
-        const mascotaId = e.target.value;
-        setSelectedMascota(mascotaId);
+        fetchHistoriasClinicas();
+    }, [id]);
 
-        try {
-            const response = await axios.get(`http://localhost:5000/api/historia_clinica/${mascotaId}`);
-            setHistoriasClinicas(response.data);
-            setFilteredHistorias(response.data);
-            setCurrentPage(1); // 🔹 Reiniciar a la primera página al cambiar de mascota
-        } catch (error) {
-            console.error("Error al obtener las historias clínicas:", error);
-            setHistoriasClinicas([]);
-            setFilteredHistorias([]);
-        }
-    };
-
-    // 🔹 Función para filtrar historias clínicas según el término de búsqueda
+    // 🔹 Filtrar historias clínicas según el término de búsqueda
     useEffect(() => {
         const lowerCaseSearchTerm = searchTerm.toLowerCase();
         const results = historiasClinicas.filter((historia) =>
@@ -98,18 +83,15 @@ const VerHistoriaClinica = () => {
     return (
         <div className="dashboard-container">
             {/* 📌 Sidebar correctamente integrado */}
-      <Sidebar />
+            <Sidebar />
 
             <div className="historia-container">
-                <h2>📜 Historial Clínico</h2>
+                {/* 📌 Botón para retroceder */}
+                <button className="back-button" onClick={() => navigate(-1)}>
+                    <FaArrowLeft /> Volver
+                </button>
 
-                <label>Selecciona una mascota:</label>
-                <select value={selectedMascota} onChange={handleMascotaChange}>
-                    <option value="">Seleccione una mascota</option>
-                    {mascotas.map((m) => (
-                        <option key={m.id} value={m.id}>{m.nombre}</option>
-                    ))}
-                </select>
+                <h2>📜 Historial Clínico</h2>
 
                 {/* 🔍 Barra de búsqueda */}
                 <div className="search-container">
@@ -127,6 +109,7 @@ const VerHistoriaClinica = () => {
                         <table className="historia-table">
                             <thead>
                                 <tr>
+                                    <th>⚙️ Acciones</th> {/* ✅ Mueve los botones al inicio */}
                                     <th>📅 Fecha</th>
                                     <th>💉 Vacuna</th>
                                     <th>📅 Vacuna Fecha</th>
@@ -141,13 +124,25 @@ const VerHistoriaClinica = () => {
                                     <th>🩺 Enfermedades</th>
                                     <th>📝 Observaciones</th>
                                     <th>👨‍⚕️ Veterinario</th>
-                                    <th>⚙️ Acciones</th>
-                                    <th>⚙️ Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {currentItems.map((historia) => (
                                     <tr key={historia.historia_id}>
+                                        <td>
+                                            <button
+                                                className="btn btn-warning"
+                                                onClick={() => navigate(`/editar-historia-clinica/${historia.historia_id}`)}
+                                            >
+                                                ✏️
+                                            </button>
+                                            <button
+                                                className="btn btn-danger"
+                                                onClick={() => handleEliminarHistoria(historia.historia_id)}
+                                            >
+                                                🗑
+                                            </button>
+                                        </td>
                                         <td>{historia.fecha}</td>
                                         <td>{historia.vacunacion_tipo}</td>
                                         <td>{historia.vacunacion_fecha}</td>
@@ -162,33 +157,45 @@ const VerHistoriaClinica = () => {
                                         <td>{historia.EnfermedadesAnteriores}</td>
                                         <td>{historia.observaciones}</td>
                                         <td>{historia.veterinario}</td>
-                                        <td>
-                                            <button 
-                                                className="btn btn-warning"
-                                                onClick={() => navigate(`/editar-historia-clinica/${historia.historia_id}`)}
-                                            >
-                                                ✏️ Editar
-                                            </button>
-                                            </td>
-                                            <td>
-                                            <button 
-                                                className="btn btn-danger"
-                                                onClick={() => handleEliminarHistoria(historia.historia_id)}
-                                            >
-                                                🗑 Eliminar
-                                            </button>
-                                        </td>
                                     </tr>
-                                    
                                 ))}
                             </tbody>
                         </table>
 
                         {/* 📌 Controles de paginación */}
                         <div className="pagination">
-                            <button onClick={prevPage} disabled={currentPage === 1}>⬅️ Anterior</button>
-                            <span>Página {currentPage} de {Math.ceil(filteredHistorias.length / itemsPerPage)}</span>
-                            <button onClick={nextPage} disabled={currentPage >= Math.ceil(filteredHistorias.length / itemsPerPage)}>Siguiente ➡️</button>
+                            <div className="pagination-buttons">
+                                {/* Botón Anterior */}
+                                <button
+                                    onClick={prevPage}
+                                    disabled={currentPage === 1}
+                                    className="pagination-btn"
+                                >
+                                    ⬅️ Anterior
+                                </button>
+
+                                {/* Botón Siguiente */}
+                                <button
+                                    onClick={nextPage}
+                                    disabled={currentPage >= Math.ceil(filteredHistorias.length / itemsPerPage)}
+                                    className="pagination-btn"
+                                >
+                                    Siguiente ➡️
+                                </button>
+                            </div>
+
+                            {/* 📌 Números de página dinámicos */}
+                            <div className="pagination-numbers">
+                                {Array.from({ length: Math.ceil(filteredHistorias.length / itemsPerPage) }, (_, index) => (
+                                    <button
+                                        key={index + 1}
+                                        onClick={() => setCurrentPage(index + 1)}
+                                        className={`pagination-number ${currentPage === index + 1 ? "active" : ""}`}
+                                    >
+                                        {index + 1}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 )}

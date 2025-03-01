@@ -76,19 +76,19 @@
     background: #212537;
     color: white;
     text-align: center;
-    padding: 10px;
+    padding: 12px;
     font-size: 14px;
     white-space: nowrap;
 }
 
 /* 📌 Celdas de la tabla */
 .historia-table td {
-    padding: 8px;
+    padding: 10px;
     text-align: center;
     border-bottom: 1px solid #ddd;
     font-size: 14px;
     white-space: nowrap;
-    overflow: hidden;
+    overflow: visible; /* ✅ Permite mostrar los botones correctamente */
     text-overflow: ellipsis;
 }
 
@@ -99,15 +99,35 @@
 
 /* 📌 Botones de acciones */
 .btn-warning, .btn-danger {
-    padding: 6px 10px;
-    font-size: 14px;
-    border-radius: 5px;
+    padding: 8px 8px; /* 🔹 Botones más grandes */
+    font-size: 8px; /* 🔹 Aumenta el tamaño del texto */
+    border-radius: 6px;
     cursor: pointer;
     transition: background 0.3s ease;
     border: none;
     color: white;
 }
 
+/* 📌 Botón Volver */
+.btn-volver {
+    display: inline-block;
+    background: #007bff;
+    color: white;
+    padding: 10px 15px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 15px;
+    transition: background 0.3s ease;
+}
+
+.btn-volver:hover {
+    background: #0056b3;
+}
+
+
+/* 📌 Botón de Editar */
 .btn-warning {
     background: #ffc107;
 }
@@ -116,12 +136,19 @@
     background: #e0a800;
 }
 
+/* 📌 Botón de Eliminar */
 .btn-danger {
     background: #dc3545;
 }
 
 .btn-danger:hover {
     background: #c82333;
+}
+
+/* 📌 Ajuste de tamaño de la celda de acciones */
+.historia-table td:first-child {
+    width: 160px; /* 🔹 Asegura que los botones tengan espacio */
+    min-width: 160px;
 }
 
 /* 📌 Paginación */
@@ -136,11 +163,12 @@
     background: #212537;
     color: white;
     border: none;
-    padding: 8px 12px;
+    padding: 10px 14px; /* 🔹 Tamaño más grande */
     margin: 0 5px;
     border-radius: 5px;
     cursor: pointer;
     transition: background 0.3s ease;
+    font-size: 16px; /* 🔹 Tamaño más grande */
 }
 
 .pagination button:hover {
@@ -183,12 +211,12 @@
     }
 
     .btn-warning, .btn-danger {
-        font-size: 12px;
-        padding: 5px 8px;
+        font-size: 14px; /* 🔹 Ajuste para pantallas pequeñas */
+        padding: 8px 10px;
     }
 
     .pagination button {
-        font-size: 12px;
-        padding: 6px 10px;
+        font-size: 14px; /* 🔹 Ajuste en botones de paginación */
+        padding: 8px 12px;
     }
 }
