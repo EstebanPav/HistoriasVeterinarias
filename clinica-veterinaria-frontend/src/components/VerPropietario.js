@@ -1,62 +1,39 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import {
-  FaSearch,
-} from "react-icons/fa";
+import { FaSearch, FaArrowLeft } from "react-icons/fa"; // 🔹 Agregado FaArrowLeft para el botón de retroceso
 import "../Styles/VerPropietarios.css"; // Enlazar el CSS
 import Sidebar from "../components/Sidebar"; // ✅ Sidebar integrado
 
 const VerPropietario = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // Obtener el ID de la mascota desde la URL
   const navigate = useNavigate();
-  const [mascotas, setMascotas] = useState([]);
-  const [selectedMascota, setSelectedMascota] = useState(id || "");
   const [propietarios, setPropietarios] = useState([]);
   const [filteredPropietarios, setFilteredPropietarios] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchMascotas = async () => {
+    const fetchPropietarioByMascota = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:5000/api/mascotas_citas"
-        );
-        setMascotas(response.data);
+        const response = await axios.get(`http://localhost:5000/api/mascotas/${id}`);
+        const mascota = response.data;
+
+        if (mascota && mascota.propietario_id) {
+          const propietarioResponse = await axios.get(`http://localhost:5000/api/propietarios/${mascota.propietario_id}`);
+          setPropietarios([propietarioResponse.data]);
+          setFilteredPropietarios([propietarioResponse.data]);
+        } else {
+          setError("❌ No se encontró un propietario para esta mascota.");
+        }
       } catch (error) {
-        console.error("Error al obtener las mascotas:", error);
-        setError("❌ No se pudieron cargar las mascotas.");
+        console.error("Error al obtener el propietario:", error);
+        setError("❌ No se pudo cargar la información del propietario.");
       }
     };
 
-    fetchMascotas();
-  }, []);
-
-  const fetchPropietarios = async (propietarioId) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/api/propietarios/${propietarioId}`
-      );
-      setPropietarios([response.data]); // Guardar como array para la tabla
-      setFilteredPropietarios([response.data]);
-    } catch (error) {
-      console.error("Error al obtener el propietario:", error);
-      setError("❌ No se pudo cargar la información del propietario.");
-    }
-  };
-
-  const handleMascotaChange = (e) => {
-    const mascotaId = e.target.value;
-    setSelectedMascota(mascotaId);
-
-    const mascotaSeleccionada = mascotas.find(
-      (mascota) => mascota.id.toString() === mascotaId
-    );
-    if (mascotaSeleccionada) {
-      fetchPropietarios(mascotaSeleccionada.propietario_id);
-    }
-  };
+    fetchPropietarioByMascota();
+  }, [id]);
 
   const handleSearch = (e) => {
     const value = e.target.value.toLowerCase();
@@ -76,24 +53,15 @@ const VerPropietario = () => {
 
   return (
     <div className="propietario-container">
-      {/* 📌 Sidebar correctamente integrado */}
       <Sidebar />
-      <div className="ver-propietario-content">
-        <h2>🏠 Ver Dueño de Mascota</h2>
 
-        <label htmlFor="mascotaSelect">Selecciona una mascota:</label>
-        <select
-          id="mascotaSelect"
-          value={selectedMascota}
-          onChange={handleMascotaChange}
-        >
-          <option value="">Seleccione una mascota</option>
-          {mascotas.map((mascota) => (
-            <option key={mascota.id} value={mascota.id}>
-              {mascota.nombre}
-            </option>
-          ))}
-        </select>
+      <div className="ver-propietario-content">
+        {/* 📌 Botón para retroceder */}
+        <button className="back-button" onClick={() => navigate(-1)}>
+          <FaArrowLeft /> Volver
+        </button>
+
+        <h2>🏠 Ver Dueño de Mascota</h2>
 
         <div className="search-container">
           <FaSearch className="search-icon" />
@@ -113,34 +81,32 @@ const VerPropietario = () => {
             <table className="propietario-table">
               <thead>
                 <tr>
+                  <th>⚙️ Acciones</th> {/* ✅ Botón Editar al inicio */}
                   <th>📛 Nombre</th>
                   <th>📍 Dirección</th>
                   <th>🏙 Ciudad</th>
                   <th>🌍 Provincia</th>
                   <th>📜 Cédula</th>
                   <th>📞 Celular</th>
-                  <th>⚙️ Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredPropietarios.map((propietario) => (
                   <tr key={propietario.id}>
+                    <td>
+                      <button
+                        className="btn btn-warning"
+                        onClick={() => navigate(`/editar-propietario/${propietario.id}`)}
+                      >
+                        ✏️ 
+                      </button>
+                    </td>
                     <td>{propietario.nombre}</td>
                     <td>{propietario.direccion || "No disponible"}</td>
                     <td>{propietario.ciudad || "No disponible"}</td>
                     <td>{propietario.provincia || "No disponible"}</td>
                     <td>{propietario.cedula || "No disponible"}</td>
                     <td>{propietario.celular || "No disponible"}</td>
-                    <td>
-                      <button
-                        className="btn btn-warning"
-                        onClick={() =>
-                          navigate(`/editar-propietario/${propietario.id}`)
-                        }
-                      >
-                        ✏️ Editar
-                      </button>
-                      </td>
                   </tr>
                 ))}
               </tbody>

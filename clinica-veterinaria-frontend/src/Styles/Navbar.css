@@ -1,3 +1,22 @@
+/* 🔹 Ajuste del botón "Salir" */
+.navbar .btn-danger {
+  background-color: #dc3545 !important; /* Color rojo de Bootstrap */
+  color: white !important; /* Asegura que el texto sea blanco */
+  padding: 8px 15px !important; /* Ajuste del tamaño */
+  border: none !important; /* Elimina cualquier borde */
+  border-radius: 5px !important; /* Bordes redondeados */
+  font-size: 1rem !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 80px; /* 🔹 Evita que el botón se achique demasiado */
+}
+
+/* 🔹 Estilo al pasar el mouse */
+.navbar .btn-danger:hover {
+  background-color: #c82333 !important; /* Rojo más oscuro */
+}
+
 /* 📌 Estilos de la Navbar */
 .navbar {
   background-color: #119da4; /* Color principal */

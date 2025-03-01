@@ -1,67 +1,39 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import "../Styles/VerExamenClinico.css";
 import Sidebar from "../components/Sidebar"; // ✅ Sidebar integrado
 
 const VerExamenClinico = () => {
-  const [mascotas, setMascotas] = useState([]);
-  const [selectedMascota, setSelectedMascota] = useState("");
+  const { id } = useParams(); // 📌 Obtiene el ID de la mascota desde la URL
   const [examenesClinicos, setExamenesClinicos] = useState([]);
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState(""); // Para la barra de búsqueda
-  const [filteredExamenes, setFilteredExamenes] = useState([]); // Para almacenar los exámenes filtrados
   const [currentPage, setCurrentPage] = useState(1); // Página actual
   const itemsPerPage = 5; // Número de elementos por página
 
   useEffect(() => {
-    const fetchMascotas = async () => {
+    const fetchExamenesClinicos = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/mascotas");
-        setMascotas(response.data);
+        const response = await axios.get(`http://localhost:5000/api/examen_clinico/${id}`);
+        setExamenesClinicos(response.data);
       } catch (error) {
-        console.error("Error al obtener las mascotas:", error);
+        console.error("Error al obtener los exámenes clínicos:", error);
       }
     };
-    fetchMascotas();
-  }, []);
 
-  const handleMascotaChange = async (e) => {
-    const mascotaId = e.target.value;
-    setSelectedMascota(mascotaId);
+    fetchExamenesClinicos();
+  }, [id]);
 
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/api/examen_clinico/${mascotaId}`
-      );
-      setExamenesClinicos(response.data);
-      setFilteredExamenes(response.data); // Actualiza la lista filtrada
-      setCurrentPage(1); // 🔹 Reinicia a la primera página cuando cambia de mascota
-    } catch (error) {
-      console.error("Error al obtener los exámenes clínicos:", error);
-      setExamenesClinicos([]);
-      setFilteredExamenes([]);
-    }
-  };
-
-  // 🔹 Función para eliminar un examen clinico
+  // 🔹 Función para eliminar un examen clínico
   const handleEliminarExamenClinico = async (examenId) => {
-    const confirmacion = window.confirm(
-      "¿Estás seguro de que deseas eliminar este examen clínico?"
-    );
+    const confirmacion = window.confirm("¿Estás seguro de que deseas eliminar este examen clínico?");
     if (!confirmacion) return;
 
     try {
-      const response = await axios.delete(
-        `http://localhost:5000/api/examen_clinico/${examenId}`
-      );
+      const response = await axios.delete(`http://localhost:5000/api/examen_clinico/${examenId}`);
       if (response.status === 200) {
         alert("✅ Examen clínico eliminado correctamente.");
-
-        // ⬇️ Aquí corregimos el filtro con `examen.id`
-        setExamenesClinicos(
-          examenesClinicos.filter((examen) => examen.id !== examenId)
-        );
+        setExamenesClinicos(examenesClinicos.filter(examen => examen.id !== examenId));
       } else {
         alert("❌ No se pudo eliminar el examen clínico.");
       }
@@ -71,15 +43,14 @@ const VerExamenClinico = () => {
     }
   };
 
+  // 🔹 Calcular qué elementos mostrar en la página actual
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredExamenes.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
+  const currentItems = examenesClinicos.slice(indexOfFirstItem, indexOfLastItem);
 
+  // 🔹 Funciones para cambiar de página
   const nextPage = () => {
-    if (currentPage < Math.ceil(filteredExamenes.length / itemsPerPage)) {
+    if (currentPage < Math.ceil(examenesClinicos.length / itemsPerPage)) {
       setCurrentPage(currentPage + 1);
     }
   };
@@ -96,36 +67,22 @@ const VerExamenClinico = () => {
       <Sidebar />
 
       <div className="historia-container">
-        <h2>🩺 Exámenes Clínicos</h2>
+        {/* 📌 Botón de Volver */}
+        <button className="btn-volver" onClick={() => navigate(-1)}>
+          ⬅️ Volver
+        </button>
 
-        <label>Selecciona una mascota:</label>
-        <select value={selectedMascota} onChange={handleMascotaChange}>
-          <option value="">Seleccione una mascota</option>
-          {mascotas.map((m) => (
-            <option key={m.id} value={m.id}>
-              {m.nombre}
-            </option>
-          ))}
-        </select>
+        <h2>🩺 Exámenes Clínicos de la Mascota</h2>
 
-        <div className="search-container">
-          <input
-            type="text"
-            placeholder="🔍 Buscar en cualquier campo..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
-        </div>
-
-        {examenesClinicos.length > 0 && (
+        {examenesClinicos.length > 0 ? (
           <div className="tabla-container">
             <table className="historia-table">
               <thead>
                 <tr>
+                  <th>⚙️ Acciones</th> {/* ✅ Mueve los botones al inicio */}
                   <th>📅 Fecha</th>
                   <th>🩺 Actitud</th>
-                  <th>🏋️‍♂️ Condición Corporal</th>
+                  <th>🏋️ Condición Corporal</th>
                   <th>💧 Hidratación</th>
                   <th>📝 Observaciones</th>
                   <th>👀 Mucosa Conjuntiva</th>
@@ -152,19 +109,25 @@ const VerExamenClinico = () => {
                   <th>🧠 Sist Nervioso Observaciones</th>
                   <th>❤️ Sist Cardiovascular</th>
                   <th>❤️ Sist Cardiovascular Observaciones</th>
-                  <th> Sist Respiratorio</th>
-                  <th> Sist Respiratorio Observaciones</th>
+                  <th>🌬️ Sist Respiratorio</th>
+                  <th>🌬️ Sist Respiratorio Observaciones</th>
                   <th>🍽️ Sist Digestivo</th>
                   <th>🍽️ Sist Digestivo Observaciones</th>
-                  <th>🚻 Siste Genitourinario</th>
-                  <th>🚻 Siste Genitourinario Observaciones</th>
-                  <th>⚙️ Acciones</th>
-                  <th>⚙️ Acciones</th>
+                  <th>🚻 Sist Genitourinario</th>
+                  <th>🚻 Sist Genitourinario Observaciones</th>
                 </tr>
               </thead>
               <tbody>
-                {currentItems.map((examen) => (
+                {examenesClinicos.map((examen) => (
                   <tr key={examen.id}>
+                    <td>
+                      <button className="btn btn-warning" onClick={() => navigate(`/editar-examen-clinico/${examen.id}`)}>
+                        ✏️
+                      </button>
+                      <button className="btn btn-danger" onClick={() => handleEliminarExamenClinico(examen.id)}>
+                        🗑
+                      </button>
+                    </td>
                     <td>{examen.fecha}</td>
                     <td>{examen.actitud}</td>
                     <td>{examen.condicion_corporal}</td>
@@ -200,53 +163,13 @@ const VerExamenClinico = () => {
                     <td>{examen.digestivo_observaciones}</td>
                     <td>{examen.genitourinario_estado}</td>
                     <td>{examen.genitourinario_observaciones}</td>
-                    <td>
-                      <button
-                        className="btn btn-warning"
-                        onClick={() => {
-                          console.log("Navegando a editar:", examen.id); // 🛠️ Depuración
-                          navigate(`/editar-examen-clinico/${examen.id}`);
-                        }}
-                      >
-                        ✏️ Editar
-                      </button>
-                    </td>
-                    <td>
-                      <button
-                        className="btn btn-danger"
-                        onClick={() => handleEliminarExamenClinico(examen.id)}
-                      >
-                        🗑 Eliminar
-                      </button>
-                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            <div className="pagination">
-              <button
-                onClick={prevPage}
-                disabled={currentPage === 1}
-                className="pagination-btn"
-              >
-                ⬅️ Anterior
-              </button>
-              <span>
-                Página {currentPage} de{" "}
-                {Math.ceil(filteredExamenes.length / itemsPerPage)}
-              </span>
-              <button
-                onClick={nextPage}
-                disabled={
-                  currentPage >=
-                  Math.ceil(filteredExamenes.length / itemsPerPage)
-                }
-                className="pagination-btn"
-              >
-                Siguiente ➡️
-              </button>
-            </div>
           </div>
+        ) : (
+          <p>No hay exámenes clínicos registrados.</p>
         )}
       </div>
     </div>
