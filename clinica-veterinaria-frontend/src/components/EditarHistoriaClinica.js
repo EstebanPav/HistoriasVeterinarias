@@ -3,6 +3,7 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import "../Styles/EditarHistoriaClinica.css"; // Archivo CSS mejorado
 import Sidebar from "../components/Sidebar"; // ✅ Sidebar integrado
+import {FaArrowLeft } from 'react-icons/fa';
 
 const EditarHistoriaClinica = () => {
     const { id } = useParams();
@@ -34,7 +35,7 @@ const EditarHistoriaClinica = () => {
         try {
             await axios.put(`http://localhost:5000/api/historia_clinica/${id}`, historiaClinica);
             alert("✅ Historia clínica actualizada correctamente.");
-            navigate("/ver-historia-clinica");
+            navigate(`/ver-historia-clinica/${historiaClinica.mascota_id}`);
         } catch (error) {
             console.error("Error al actualizar la historia clínica:", error);
             alert("❌ Error al actualizar la historia clínica.");
@@ -49,6 +50,10 @@ const EditarHistoriaClinica = () => {
       <Sidebar />
         
         <div className="editar-historia-container">
+            {/* 📌 Botón para retroceder */}
+                            <button className="back-button" onClick={() => navigate(-1)}>
+                                <FaArrowLeft /> Volver
+                            </button>
             <h2>✏️ Editar Historia Clínica</h2>
             <form onSubmit={handleSubmit} className="editar-form">
                 <div className="form-group">
@@ -139,7 +144,9 @@ const EditarHistoriaClinica = () => {
 
                 <div className="button-group">
                     <button type="submit" className="btn-save">💾 Guardar Cambios</button>
-                    <button type="button" className="btn-cancel" onClick={() => navigate("/ver-historia-clinica")}>❌ Cancelar</button>
+                    <button type="button" className="cancel-button" onClick={() => navigate(`/ver-historia-clinica/${historiaClinica.mascota_id}`)}>❌ Cancelar</button>
+
+
                 </div>
             </form>
         </div>

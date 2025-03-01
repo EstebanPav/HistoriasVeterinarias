@@ -15,7 +15,7 @@ const Sidebar = () => {
         <li onClick={() => navigate("/ver-mascotas")}> {/* ✅ Corrige esta ruta */}
           <FaPaw /> Mascotas
         </li>
-        <li onClick={() => navigate("/calendario")}>
+        <li onClick={() => navigate("/ver-citas")}>
           <FaCalendarAlt /> Calendario
         </li>
       </ul>

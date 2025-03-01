@@ -1,59 +1,44 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import dayjs from "dayjs";
-import "dayjs/locale/es";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import Sidebar from "../components/Sidebar"; // 📌 Importamos Sidebar
-import "../Styles/EditarCita.css"; // 📌 Aseguramos que el CSS esté bien aplicado
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { setHours, setMinutes } from "date-fns";
+import es from "date-fns/locale/es"; // 📌 Configuración en español
+import Sidebar from "../components/Sidebar";
+import "../Styles/EditarCita.css";
+import {FaArrowLeft } from "react-icons/fa"; // 🔹 Agregado FaArrowLeft para el botón de retroceso
+
 
 const EditarCita = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     
-    // 📌 Estados para los campos de la cita
-    const [fechaHora, setFechaHora] = useState(dayjs());
+    const [selectedDate, setSelectedDate] = useState(new Date());
     const [motivo, setMotivo] = useState("");
-    const [mascotaId, setMascotaId] = useState("");
-    const [propietarioId, setPropietarioId] = useState("");
     const [veterinarioId, setVeterinarioId] = useState("");
-    const [estado, setEstado] = useState("Pendiente"); // 📌 Estado inicial
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(true);
-
-    // 📌 Listas para los combobox
-    const [mascotas, setMascotas] = useState([]);
-    const [propietarios, setPropietarios] = useState([]);
+    
+    const [mascota, setMascota] = useState(null);
     const [veterinarios, setVeterinarios] = useState([]);
 
-    // 📌 Cargar datos de la cita y opciones de selección
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Obtener detalles de la cita
                 const resCita = await axios.get(`http://localhost:5000/api/ver_cita/${id}`);
                 const cita = resCita.data;
 
-                setFechaHora(dayjs(cita.fecha_hora));
+                setSelectedDate(new Date(cita.fecha_hora));
                 setMotivo(cita.motivo);
-                setMascotaId(cita.mascota_id);
-                setPropietarioId(cita.propietario_id);
                 setVeterinarioId(cita.veterinario_id);
-                setEstado(cita.estado);
+                
+                const resMascota = await axios.get(`http://localhost:5000/api/mascotas/${cita.mascota_id}`);
+                setMascota(resMascota.data);
 
-                // Obtener listas de selección
-                const [resMascotas, resPropietarios, resVeterinarios] = await Promise.all([
-                    axios.get("http://localhost:5000/api/mascotas_citas"),
-                    axios.get("http://localhost:5000/api/propietarios_cita"),
-                    axios.get("http://localhost:5000/api/veterinarios_cita"),
-                ]);
-
-                setMascotas(resMascotas.data);
-                setPropietarios(resPropietarios.data);
+                const resVeterinarios = await axios.get("http://localhost:5000/api/veterinarios_cita");
                 setVeterinarios(resVeterinarios.data);
-
+                
                 setLoading(false);
             } catch (error) {
                 console.error("Error al obtener los datos:", error);
@@ -65,24 +50,18 @@ const EditarCita = () => {
         fetchData();
     }, [id]);
 
-    // 📌 Guardar cambios de la cita
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage("");
 
         try {
             await axios.put(`http://localhost:5000/api/editar_cita/${id}`, {
-                fecha_hora: fechaHora.format("YYYY-MM-DD HH:mm:ss"),
+                fecha_hora: selectedDate.toISOString().slice(0, 19).replace("T", " "),
                 motivo,
-                mascota_id: mascotaId,
-                propietario_id: propietarioId,
                 veterinario_id: veterinarioId,
-                estado
             });
-
             setMessage("✅ Cita actualizada correctamente.");
             
-            // 🔹 Esperar 1.5 segundos y redirigir a "ver-citas"
             setTimeout(() => {
                 navigate("/ver-citas");
                 window.location.reload();
@@ -95,24 +74,31 @@ const EditarCita = () => {
 
     return (
         <div className="dashboard-container">
-            <Sidebar /> {/* 📌 Sidebar alineada correctamente al costado */}
-
+            <Sidebar />
             <div className="editar-cita-content">
                 <h2 className="editar-cita-title">📅 Editar Cita Clínica</h2>
+                {/* 📌 Botón para retroceder */}
+                <button className="back-button" onClick={() => navigate(-1)}>
+                      <FaArrowLeft /> Volver
+                    </button>
 
                 {loading ? (
                     <p className="loading-message">Cargando datos...</p>
                 ) : (
                     <form onSubmit={handleSubmit} className="editar-cita-form">
                         <label>📅 Fecha y Hora:</label>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DateTimePicker
-                                label="Selecciona nueva fecha y hora"
-                                value={fechaHora}
-                                onChange={(newValue) => setFechaHora(newValue)}
-                                disablePast
-                            />
-                        </LocalizationProvider>
+                        <DatePicker
+                            selected={selectedDate}
+                            onChange={(date) => setSelectedDate(date)}
+                            showTimeSelect
+                            dateFormat="yyyy-MM-dd HH:mm"
+                            timeFormat="HH:mm"
+                            minDate={new Date()} // 📌 No permite fechas pasadas
+                            minTime={setMinutes(setHours(new Date(), 8), 0)} // 📌 Desde las 08:00 AM
+                            maxTime={setMinutes(setHours(new Date(), 18), 0)} // 📌 Hasta las 06:00 PM
+                            locale={es} // 📌 Configura en español
+                            className="date-picker"
+                        />
 
                         <label>📝 Motivo:</label>
                         <textarea 
@@ -121,20 +107,10 @@ const EditarCita = () => {
                         ></textarea>
 
                         <label>🐶 Mascota:</label>
-                        <select value={mascotaId} onChange={(e) => setMascotaId(e.target.value)}>
-                            <option value="">Seleccione una mascota</option>
-                            {mascotas.map((m) => (
-                                <option key={m.id} value={m.id}>{m.nombre}</option>
-                            ))}
-                        </select>
+                        <input type="text" value={mascota ? mascota.mascota_nombre : "Cargando..."} disabled />
 
                         <label>👤 Propietario:</label>
-                        <select value={propietarioId} onChange={(e) => setPropietarioId(e.target.value)}>
-                            <option value="">Seleccione un propietario</option>
-                            {propietarios.map((p) => (
-                                <option key={p.id} value={p.id}>{p.nombre}</option>
-                            ))}
-                        </select>
+                        <input type="text" value={mascota ? mascota.propietario_nombre : "Cargando..."} disabled />
 
                         <label>👨‍⚕️ Veterinario:</label>
                         <select value={veterinarioId} onChange={(e) => setVeterinarioId(e.target.value)}>
@@ -142,13 +118,6 @@ const EditarCita = () => {
                             {veterinarios.map((v) => (
                                 <option key={v.id} value={v.id}>{v.nombre}</option>
                             ))}
-                        </select>
-
-                        <label>📌 Estado de la Cita:</label>
-                        <select value={estado} onChange={(e) => setEstado(e.target.value)}>
-                            <option value="Pendiente">Pendiente</option>
-                            <option value="Confirmada">Confirmada</option>
-                            <option value="Cancelada">Cancelada</option>
                         </select>
 
                         <button type="submit" className="btn-guardar">💾 Guardar Cambios</button>
