@@ -3,7 +3,7 @@ import axios from "axios";
 import { FaSearch } from "react-icons/fa";
 import "../Styles/TablaMascota.css";
 import { useNavigate } from "react-router-dom";
-import MascotaDetalles from "../components/MascotaDetalles";
+import MascotaDetalles from "./MascotaDetallesPage";
 import Sidebar from "../components/Sidebar"; // ✅ Sidebar integrado
 
 const MascotasTable = () => {

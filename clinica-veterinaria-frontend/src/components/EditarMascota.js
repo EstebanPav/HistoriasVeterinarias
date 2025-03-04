@@ -69,7 +69,6 @@ const EditarMascota = () => {
         <form className="edit-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Especie:</label>
-            {/* <input type="text" name="especie" value={mascota.especie || ""} onChange={handleChange} required /> */}
             <select name="especie" value={mascota.especie || ""} onChange={handleChange} required>
               <option value="Perro">Perro</option>
               <option value="Gato">Gato</option>
