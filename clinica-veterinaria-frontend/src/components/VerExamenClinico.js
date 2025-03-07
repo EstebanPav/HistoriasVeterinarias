@@ -71,7 +71,13 @@ const VerExamenClinico = () => {
         <button className="btn-volver" onClick={() => navigate(-1)}>
           ⬅️ Volver
         </button>
-
+         {/* 📌 Botón para crear nueva historia clínica */}
+         <button
+          className="btn btn-primary"
+          onClick={() => navigate(`/registrar-examenes-clinicos/${id}`)}
+        >
+          ➕ Crear nuevo examen clínico
+        </button>
         <h2>🩺 Exámenes Clínicos de la Mascota</h2>
 
         {examenesClinicos.length > 0 ? (

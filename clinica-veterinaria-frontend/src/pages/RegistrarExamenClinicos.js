@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import axios from "axios";
 import "../Styles/ExamenClinico.css"; // CSS específico para el formulario
 import Sidebar from "../components/Sidebar"; // 🔹 Importamos Sidebar
+import { FaArrowLeft } from "react-icons/fa";
+import { useParams, useNavigate} from "react-router-dom"; // 📌 Importamos useParams
 
 
 const RegistrarExamenClinico = () => {
-  const [mascotas, setMascotas] = useState([]);
+  const { mascotaId } = useParams(); // 📌 Obtener el ID de la mascota desde la URL
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     mascota_id: "",
     fecha: "",
@@ -47,21 +50,6 @@ const RegistrarExamenClinico = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  useEffect(() => {
-    const fetchMascotas = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:5000/api/mascotasHistorial"
-        );
-        setMascotas(response.data);
-      } catch (error) {
-        console.error("Error al cargar las mascotas:", error);
-        setError("No se pudieron cargar las mascotas.");
-      }
-    };
-    fetchMascotas();
-  }, []);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -70,7 +58,7 @@ const RegistrarExamenClinico = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/api/examenes_clinicos", formData);
+      await axios.post(`http://localhost:5000/api/examenes_clinicos/${mascotaId}`, formData);
       setSuccess("Examen clínico registrado con éxito.");
       setFormData({
         mascota_id: "",
@@ -120,25 +108,16 @@ const RegistrarExamenClinico = () => {
     <div className="dashboard-container">
       <Sidebar /> {/* 📌 Usamos el nuevo Sidebar */}
       <div className="form-container">
+        <button className="back-button" onClick={() => navigate(-1)}>
+                                            <FaArrowLeft /> Volver
+                                          </button>
       <h2 className="form-title">Registro de Examen Clínico</h2> {/* 🔹 Nuevo título centrado */}
         <form onSubmit={handleSubmit}>
           {error && <p className="error-message">{error}</p>}
           {success && <p className="success-message">{success}</p>}
 
-          <label>Mascota:</label>
-          <select
-            name="mascota_id"
-            value={formData.mascota_id}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Seleccione una mascota</option>
-            {mascotas.map((mascota) => (
-              <option key={mascota.id} value={mascota.id}>
-                {mascota.nombre}
-              </option>
-            ))}
-          </select>
+          {/* 📌 ID de mascota ya preseleccionado (oculto) */}
+          <input type="hidden" name="mascota_id" value={mascotaId} />
 
           <label>Fecha:</label>
           <input
