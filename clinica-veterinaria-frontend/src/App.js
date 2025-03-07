@@ -56,9 +56,9 @@ const App = () => {
                 <Route path="/registrar-propietario" element={<PrivateRoute element={<RegistrarPropietario />} />} />
                 <Route path="/registrar-mascota" element={<PrivateRoute element={<RegistrarMascota />} />} />
                 <Route path="/registrar-historia/:mascotaId" element={<PrivateRoute element={<RegistrarHistoriaClinica />} />} />
+                <Route path="/registrar-examenes-clinicos/:mascotaId" element={<PrivateRoute element={<RegistrarExamenClinico />} />} />
                 <Route path="/ver-mascotas" element={<PrivateRoute element={<MascotasTable />} />} />  {/* ✅ Nueva Ruta */}
                 <Route path="/detalle-mascota/:id" element={<PrivateRoute element={<MascotaDetallesPage />} />} />  {/* ✅ Página de detalles */}
-                <Route path="/registrar-examen-clinico" element={<PrivateRoute element={<RegistrarExamenClinico />} />} />
                 <Route path="/ver-citas" element={<PrivateRoute element={<VerCitas />} />} />
                 <Route path="/editar-cita/:id" element={<PrivateRoute element={<EditarCita />} />} />
                 <Route path="/registrar-cita/:id" element={<PrivateRoute element={<Calendario />} />} />
