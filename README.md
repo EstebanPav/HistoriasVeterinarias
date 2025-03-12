@@ -7,3 +7,4 @@ npm install
 Acceder al backend
 cd clinica-veterinaria-backend
 npm install
+Pruebas con Jenkins
