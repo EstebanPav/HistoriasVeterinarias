@@ -9,11 +9,6 @@ pipeline {
     }
 
     stages {
-        stage('Clonar código') {
-            steps {
-                git branch: 'main', url: 'https://github.com/EstebanPav/HistoriasVeterinarias.git'
-            }
-        }
 
         stage('Instalar dependencias del backend') {
             steps {
