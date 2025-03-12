@@ -24,7 +24,7 @@ pipeline {
         stage('Instalar dependencias del frontend') {
             steps {
                 dir("${FRONTEND_DIR}") {
-                    bat 'npm install'
+                    bat 'npm install --legacy-peer-deps'
                 }
             }
         }
