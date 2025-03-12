@@ -1,199 +1,63 @@
-/* 📌 Contenedor principal */
-.dashboard-container {
-    display: flex;
-    justify-content: center; /* Centrar el contenido */
-    align-items: flex-start;
-    min-height: 100vh;
-    background-color: #f4f4f4;
-    padding-left: 270px; /* 🔹 Ajuste extra para separar de la sidebar */
-    padding-top: 80px; /* 🔹 Espacio para la navbar */
-}
-
-/* 📌 Contenedor del historial clínico */
-.historia-container {
-    width: 100%;
-    max-width: 1200px; /* 🔹 Mantiene la tabla compacta */
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    margin: 0 auto; /* 🔹 Centrar horizontalmente */
-}
-
-/* 📌 Título */
-.historia-container h2 {
-    text-align: center;
-    font-size: 22px;
-    color: #212537;
-}
-
-/* 📌 Selector de mascotas */
-.historia-container select {
-    width: 100%;
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    margin-bottom: 15px;
-}
-
-/* 📌 Contenedor de búsqueda */
-.search-container {
-    display: flex;
-    align-items: center;
-    background: #fff;
-    padding: 5px 10px;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-    margin-bottom: 15px;
-    width: 100%;
-}
-
-.search-icon {
-    color: #666;
-    margin-right: 5px;
-}
-
-.search-container input {
-    width: 100%;
-    border: none;
-    outline: none;
-    font-size: 14px;
-}
-
-/* 📌 Contenedor de la tabla con scroll */
-.tabla-container {
-    width: 100%;
-    overflow-x: auto; /* 🔹 Activa el scroll horizontal */
-    white-space: nowrap; /* 🔹 Evita que las celdas salten de línea */
-    padding-bottom: 10px; /* 🔹 Espacio extra para mejor visualización */
-}
-
-/* 📌 Estilos de la tabla */
-.historia-table {
-    width: max-content; /* 🔹 La tabla ocupará solo el espacio necesario */
-    border-collapse: collapse;
-    background: white;
-}
-
-/* 📌 Encabezados de la tabla */
-.historia-table th {
-    background: #212537;
-    color: white;
-    text-align: center;
-    padding: 10px;
-    font-size: 14px;
-    white-space: nowrap;
-}
-
-/* 📌 Celdas de la tabla */
-.historia-table td {
-    padding: 8px;
-    text-align: center;
-    border-bottom: 1px solid #ddd;
-    font-size: 14px;
-    white-space: nowrap; /* 🔹 Mantiene el texto en una línea */
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* 📌 Resaltar fila al pasar el cursor */
-.historia-table tbody tr:hover {
-    background: rgba(0, 0, 0, 0.05);
-}
-
-/* 📌 Botones de acciones */
-.btn-warning, .btn-danger {
-    padding: 6px 10px;
-    font-size: 14px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-    border: none;
-    color: white;
-}
-
-.btn-warning {
-    background: #ffc107;
-}
-
-.btn-warning:hover {
-    background: #e0a800;
-}
-
-.btn-danger {
-    background: #dc3545;
-}
-
-.btn-danger:hover {
-    background: #c82333;
-}
-
-/* 📌 Paginación */
+/* 📌 Contenedor de paginación */
 .pagination {
     display: flex;
-    justify-content: center;
+    flex-direction: column; /* 🔹 Organiza los botones y números de página en columna */
     align-items: center;
+    justify-content: center;
     margin-top: 15px;
 }
 
-.pagination button {
+/* 📌 Botones "Anterior" y "Siguiente" más grandes */
+.pagination-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* 🔹 Espacio entre botones */
+    width: 100%;
+}
+
+.pagination-btn {
     background: #212537;
     color: white;
     border: none;
-    padding: 8px 12px;
-    margin: 0 5px;
-    border-radius: 5px;
+    padding: 14px 40px; /* 🔹 Botón más grande */
+    font-size: 16px;
+    width: 180px; /* 🔹 Ajuste del ancho del botón */
+    border-radius: 6px;
     cursor: pointer;
     transition: background 0.3s ease;
+    text-align: center;
 }
 
-.pagination button:hover {
+.pagination-btn:hover {
     background: #343a40;
 }
 
-.pagination button:disabled {
+.pagination-btn:disabled {
     background: #ccc;
     cursor: not-allowed;
 }
 
-/* 📌 Ajuste responsivo */
-@media (max-width: 1200px) {
-    .dashboard-container {
-        padding-left: 220px; /* 🔹 Ajuste extra en pantallas medianas */
-    }
-
-    .historia-container {
-        max-width: 1000px; /* 🔹 Ajuste de ancho */
-    }
+/* 📌 Contenedor de los números de página */
+.pagination-numbers {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px; /* 🔹 Espacio entre los botones y los números */
 }
 
-@media (max-width: 768px) {
-    .dashboard-container {
-        flex-direction: column;
-        align-items: center;
-        padding-left: 0;
-        padding-top: 100px;
-    }
+/* 📌 Estilos de los números de página */
+.pagination-number {
+    background: #ddd;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s ease;
+}
 
-    .historia-container {
-        width: 90%;
-        max-width: 100%;
-        padding: 15px;
-    }
-
-    .historia-table th, .historia-table td {
-        font-size: 12px;
-        padding: 6px;
-    }
-
-    .btn-warning, .btn-danger {
-        font-size: 12px;
-        padding: 5px 8px;
-    }
-
-    .pagination button {
-        font-size: 12px;
-        padding: 6px 10px;
-    }
+/* 📌 Número activo de paginación */
+.pagination-number.active {
+    background: #212537;
+    color: white;
 }

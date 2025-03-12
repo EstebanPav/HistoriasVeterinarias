@@ -3,7 +3,7 @@ import axios from "axios";
 import { FaSearch } from "react-icons/fa";
 import "../Styles/TablaMascota.css";
 import { useNavigate } from "react-router-dom";
-import MascotaDetalles from "../components/MascotaDetalles";
+import MascotaDetalles from "./MascotaDetallesPage";
 import Sidebar from "../components/Sidebar"; // ✅ Sidebar integrado
 
 const MascotasTable = () => {
@@ -21,17 +21,15 @@ const MascotasTable = () => {
     const fetchMascotas = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/mascotas");
-        console.log("📥 Datos de la API:", response.data); // 🛠 Verifica si el ID viene correctamente
         setMascotas(response.data);
         setFilteredMascotas(response.data);
       } catch (error) {
         console.error("Error al cargar las mascotas:", error);
       }
     };
-  
+
     fetchMascotas();
   }, []);
-  
 
   useEffect(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
@@ -46,25 +44,20 @@ const MascotasTable = () => {
   }, [searchTerm, mascotas]);
 
   const handleRowClick = (mascota) => {
-    console.log("🐾 Mascota seleccionada:", mascota); // 🛠 Verifica que el objeto tiene un ID válido
-    setSelectedMascota(mascota);
-  };
-  
-  const handleVerPropietario = () => {
-    navigate(`/ver-propietario`);
+    navigate(`/detalle-mascota/${mascota.id}`); // Redirigir a la página de detalles
   };
 
   // 🔹 Calcular el índice de los elementos a mostrar en la página actual
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredMascotas.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
+  const currentItems = filteredMascotas.slice(indexOfFirstItem, indexOfLastItem);
 
-  // 🔹 Función para cambiar de página
+  // 🔹 Calcular el número total de páginas
+  const totalPages = Math.ceil(filteredMascotas.length / itemsPerPage);
+
+  // 🔹 Funciones para cambiar de página
   const nextPage = () => {
-    if (currentPage < Math.ceil(filteredMascotas.length / itemsPerPage)) {
+    if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
     }
   };
@@ -73,6 +66,10 @@ const MascotasTable = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
     }
+  };
+
+  const goToPage = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   return (
@@ -118,10 +115,7 @@ const MascotasTable = () => {
               {currentItems.map((mascota) => (
                 <tr
                   key={mascota.id}
-                  onClick={() => {
-                    console.log("🔍 Mascota seleccionada ID:", mascota.id); // 🛠 Verifica que el ID llega
-                    handleRowClick(mascota);
-                  }}
+                  onClick={() => handleRowClick(mascota)}
                   className="clickable-row"
                 >
                   <td>{mascota.id}</td>
@@ -139,52 +133,31 @@ const MascotasTable = () => {
           </table>
         </div>
 
-        {/* 📌 Controles de paginación */}
+        {/* 📌 Controles de paginación con números de página */}
         <div className="pagination">
-          <button
-            onClick={prevPage}
-            disabled={currentPage === 1}
-            className="pagination-btn"
-          >
-            ⬅️ Anterior
-          </button>
-          <span>
-            Página {currentPage} de{" "}
-            {Math.ceil(filteredMascotas.length / itemsPerPage)}
-          </span>
-          <button
-            onClick={nextPage}
-            disabled={
-              currentPage >= Math.ceil(filteredMascotas.length / itemsPerPage)
-            }
-            className="pagination-btn"
-          >
-            Siguiente ➡️
-          </button>
+          <div className="pagination-buttons">
+            <button onClick={prevPage} disabled={currentPage === 1} className="pagination-btn">
+              ⬅️ Anterior
+            </button>
+
+            <button onClick={nextPage} disabled={currentPage === totalPages} className="pagination-btn">
+              Siguiente ➡️
+            </button>
+          </div>
+
+          {/* 🔹 Números de página aparecen debajo de los botones */}
+          <div className="pagination-numbers">
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i + 1}
+                onClick={() => goToPage(i + 1)}
+                className={`pagination-number ${currentPage === i + 1 ? "active" : ""}`}
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
         </div>
-
-        {/* 📌 Botón "Ver Propietario" debajo de la tabla */}
-        <div className="button-container">
-          <button onClick={handleVerPropietario} className="view-owner-btn">
-            🏠 Ver Dueños de Mascotas
-          </button>
-        </div>
-
-        {/* Botón para ver historia clínica */}
-        <button
-          onClick={() => navigate("/ver-historia-clinica")}
-          className="btn btn-info"
-        >
-          📜 Ver Historia Clínica
-        </button>
-
-        {/* Botón para ver exámen clínico */}
-        <button
-          onClick={() => navigate("/ver-examen-clinico")}
-          className="btn btn-info"
-        >
-          🩺 Ver Exámenes Clínicos
-        </button>
 
         {/* 📌 Modal para ver detalles de la mascota */}
         {selectedMascota && (

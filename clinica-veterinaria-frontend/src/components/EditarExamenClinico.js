@@ -3,6 +3,7 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 //import "../Styles/EditarExamenClinico.css";
 import Sidebar from "../components/Sidebar"; // ✅ Sidebar integrado
+import {FaArrowLeft } from 'react-icons/fa';
 
 
 const EditarExamenClinico = () => {
@@ -30,7 +31,7 @@ const EditarExamenClinico = () => {
         try {
             await axios.put(`http://localhost:5000/api/examen_clinico/${id}`, examenClinico);
             alert("✅ Examen clínico actualizado correctamente.");
-            navigate("/ver-examen-clinico");
+            navigate(`/ver-examen-clinico/${examenClinico.mascota_id}`);
         } catch (error) {
             console.error("Error al actualizar el examen clínico:", error);
             alert("❌ Error al actualizar el examen clínico.");
@@ -46,6 +47,10 @@ const EditarExamenClinico = () => {
         <div className="editar-examen-container">
             <h2>✏️ Editar Examen Clínico</h2>
             <form onSubmit={handleSubmit}>
+              {/* 📌 Botón para retroceder */}
+              <button className="back-button" onClick={() => navigate(-1)}>
+                    <FaArrowLeft /> Volver
+                </button>
                  {/* Fecha */}
                 <label>📅 Fecha:</label>
                 <input type="date" name="fecha" value={examenClinico.fecha} onChange={handleChange} required />
@@ -171,8 +176,8 @@ const EditarExamenClinico = () => {
             </fieldset>
           ))}
                 <button type="submit">💾 Guardar Cambios</button>
+                <button type="button" className="cancel-button" onClick={() => navigate(`/ver-examen-clinico/${examenClinico.mascota_id}`)}>❌ Cancelar</button>
 
-                <button type="button" onClick={() => navigate("/ver-examen-clinico")}>❌ Cancelar</button>
             </form>
         </div>
         </div>

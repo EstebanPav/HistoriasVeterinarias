@@ -302,6 +302,7 @@ router.get('/api/mascotas', async (req, res) => {
                 propietarios.nombre AS propietario_nombre
             FROM mascotas
             LEFT JOIN propietarios ON mascotas.propietario_id = propietarios.id
+            ORDER BY mascotas.id DESC; -- Aquí se ordenan en orden descendente
         `;
 
         const [results] = await db.query(query);
@@ -333,22 +334,42 @@ router.post('/api/mascotas', async (req, res) => {
         res.status(500).json({ error: 'Error al registrar la mascota' });
     }
 });
+
 //Obtener Mascota por id
 router.get('/api/mascotas/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const [result] = await db.query('SELECT * FROM mascotas WHERE id = ?', [id]);
+
+        // 🔹 Consulta con JOIN para obtener todos los datos de la mascota + propietario
+        const [result] = await db.query(
+            `SELECT 
+                m.id AS mascota_id, 
+                m.nombre AS mascota_nombre, 
+                m.especie, 
+                m.raza, 
+                m.sexo, 
+                m.color, 
+                m.fecha_nacimiento, 
+                m.edad, 
+                m.propietario_id,
+                p.nombre AS propietario_nombre
+             FROM mascotas m
+             JOIN propietarios p ON m.propietario_id = p.id
+             WHERE m.id = ?`, 
+            [id]
+        );
 
         if (result.length === 0) {
             return res.status(404).json({ error: 'Mascota no encontrada' });
         }
 
-        res.status(200).json(result[0]);
+        res.status(200).json(result[0]); // 🔹 Devuelve todos los datos correctamente
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al obtener la mascota' });
     }
 });
+
 
 router.get('/api/lista-mascotas', async (req, res) => {
     try {
@@ -362,17 +383,17 @@ router.get('/api/lista-mascotas', async (req, res) => {
 
 
 
-// Actualizar una mascota por ID
-router.put('/api/mascotas/:id', async (req, res) => {
+// Actualizar una mascota por ID sin modificar el nombre
+router.put('/api/editar-mascotas/:id', async (req, res) => {
     const { id } = req.params;
-    const { nombre, especie, raza, sexo, color, fecha_nacimiento, edad, propietario_id } = req.body;
+    const { especie, raza, sexo, color, fecha_nacimiento, edad, propietario_id } = req.body;
 
     try {
         const [result] = await db.query(
             `UPDATE mascotas SET 
-            nombre = ?, especie = ?, raza = ?, sexo = ?, color = ?, 
+            especie = ?, raza = ?, sexo = ?, color = ?, 
             fecha_nacimiento = ?, edad = ?, propietario_id = ? WHERE id = ?`,
-            [nombre, especie, raza, sexo, color, fecha_nacimiento, edad, propietario_id, id]
+            [especie, raza, sexo, color, fecha_nacimiento, edad, propietario_id, id]
         );
 
         if (result.affectedRows > 0) {
@@ -423,82 +444,82 @@ router.get('/api/historias_clinicas', async (req, res) => {
 
 
 // Ruta para registrar historias clínicas
-router.post("/api/historias_clinicas", async (req, res) => {
+router.post("/api/historias_clinicas/:mascotaId", async (req, res) => {
     try {
-      const {
-        mascota_id,
-        fecha,
-        vacunacion_tipo,
-        vacunacion_fecha,
-        desparasitacion_producto,
-        desparasitacion_fecha,
-        estado_reproductivo,
-        alimentacion,
-        habitat,
-        alergias,
-        cirugias,
-        antecedentes,
-        EnfermedadesAnteriores,
-        observaciones,
-        veterinario_id,
-      } = req.body;
-  
-      // Validar campos obligatorios
-      if (!mascota_id || !fecha || !estado_reproductivo || !alimentacion || !habitat || !veterinario_id) {
-        return res.status(400).json({ error: "Faltan campos obligatorios." });
-      }
-  
-      // SQL para insertar los datos en la tabla
-      const query = `
-        INSERT INTO historias_clinicas (
-          mascota_id,
-          fecha,
-          vacunacion_tipo,
-          vacunacion_fecha,
-          desparasitacion_producto,
-          desparasitacion_fecha,
-          estado_reproductivo,
-          alimentacion,
-          habitat,
-          alergias,
-          cirugias,
-          antecedentes,
-          EnfermedadesAnteriores,
-          observaciones,
-          veterinario_id
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `;
-  
-      // Ejecutar consulta a la base de datos
-      const [result] = await db.query(query, [
-        mascota_id,
-        fecha,
-        vacunacion_tipo || null,
-        vacunacion_fecha || null,
-        desparasitacion_producto || null,
-        desparasitacion_fecha || null,
-        estado_reproductivo,
-        alimentacion,
-        habitat,
-        alergias || null,
-        cirugias || null,
-        antecedentes || null,
-        EnfermedadesAnteriores || null,
-        observaciones || null,
-        veterinario_id,
-      ]);
-  
-      // Respuesta en caso de éxito
-      res.status(201).json({
-        message: "Historia clínica registrada exitosamente.",
-        historia_clinica_id: result.insertId,
-      });
+        const { mascotaId } = req.params; // 📌 Obtener el ID de la mascota desde la URL
+        const {
+            fecha,
+            vacunacion_tipo,
+            vacunacion_fecha,
+            desparasitacion_producto,
+            desparasitacion_fecha,
+            estado_reproductivo,
+            alimentacion,
+            habitat,
+            alergias,
+            cirugias,
+            antecedentes,
+            EnfermedadesAnteriores,
+            observaciones,
+            veterinario_id,
+        } = req.body;
+
+        // Validar campos obligatorios
+        if (!fecha || !estado_reproductivo || !alimentacion || !habitat || !veterinario_id) {
+            return res.status(400).json({ error: "Faltan campos obligatorios." });
+        }
+
+        // SQL para insertar los datos en la tabla
+        const query = `
+            INSERT INTO historias_clinicas (
+                mascota_id,
+                fecha,
+                vacunacion_tipo,
+                vacunacion_fecha,
+                desparasitacion_producto,
+                desparasitacion_fecha,
+                estado_reproductivo,
+                alimentacion,
+                habitat,
+                alergias,
+                cirugias,
+                antecedentes,
+                EnfermedadesAnteriores,
+                observaciones,
+                veterinario_id
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+
+        // Ejecutar consulta con el `id` de la mascota recibido por la URL
+        const [result] = await db.query(query, [
+            mascotaId, // 📌 Se usa el `mascotaId` obtenido de `req.params`
+            fecha,
+            vacunacion_tipo || null,
+            vacunacion_fecha || null,
+            desparasitacion_producto || null,
+            desparasitacion_fecha || null,
+            estado_reproductivo,
+            alimentacion,
+            habitat,
+            alergias || null,
+            cirugias || null,
+            antecedentes || null,
+            EnfermedadesAnteriores || null,
+            observaciones || null,
+            veterinario_id,
+        ]);
+
+        // Respuesta exitosa
+        res.status(201).json({
+            message: "Historia clínica registrada exitosamente.",
+            historia_clinica_id: result.insertId,
+        });
     } catch (error) {
-      console.error("Error al registrar la historia clínica:", error);
-      res.status(500).json({ error: "Error al registrar la historia clínica." });
+        console.error("Error al registrar la historia clínica:", error);
+        res.status(500).json({ error: "Error al registrar la historia clínica." });
     }
-  });
-    
+});
+
   router.get("/api/historia_clinica/:mascotaId", async (req, res) => {
     const { mascotaId } = req.params;
     try {
@@ -775,56 +796,10 @@ router.get('/api/examenes_clinicos', async (req, res) => {
     } 
 });
 
-router.post('/api/examenes_clinicos', async (req, res) => {
+router.post('/api/examenes_clinicos/:mascotaId', async (req, res) => {
     try {
+        const { mascotaId } = req.params; // 📌 Obtener el ID de la mascota desde la URL
         const {
-            mascota_id,
-            fecha,
-            actitud,
-            condicion_corporal,
-            hidratacion,
-            observaciones,
-            mucosa_conjuntiva,
-            mucosa_conjuntiva_observaciones,
-            mucosa_oral,
-            mucosa_oral_observaciones,
-            mucosa_vulvar_prepu,
-            mucosa_vulvar_prepu_observaciones,
-            mucosa_rectal,
-            mucosa_rectal_observaciones,
-            mucosa_ojos,
-            mucosa_ojos_observaciones,
-            mucosa_oidos,
-            mucosa_oidos_observaciones,
-            mucosa_nodulos,
-            mucosa_nodulos_observaciones,
-            mucosa_piel_anexos,
-            mucosa_piel_anexos_observaciones,
-            locomocion_estado,
-            locomocion_observaciones,
-            musculo_estado,
-            musculo_observaciones,
-            nervioso_estado,
-            nervioso_observaciones,
-            cardiovascular_estado,
-            cardiovascular_observaciones,
-            respiratorio_estado,
-            respiratorio_observaciones,
-            digestivo_estado,
-            digestivo_observaciones,
-            genitourinario_estado,
-            genitourinario_observaciones,
-        } = req.body;
-
-        // Validación de campos obligatorios
-        if (!mascota_id || !fecha || !actitud || !condicion_corporal || !hidratacion) {
-            return res.status(400).json({ error: 'Faltan campos obligatorios.' });
-        }
-
-        // Consulta SQL para insertar datos
-        const query = `
-        INSERT INTO examenes_clinicos (
-            mascota_id,
             fecha,
             actitud,
             condicion_corporal,
@@ -860,53 +835,103 @@ router.post('/api/examenes_clinicos', async (req, res) => {
             digestivo_observaciones,
             genitourinario_estado,
             genitourinario_observaciones
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `;
+        } = req.body;
+
+        // 📌 Validar campos obligatorios
+        if (!fecha || !actitud || !condicion_corporal || !hidratacion) {
+            return res.status(400).json({ error: 'Faltan campos obligatorios.' });
+        }
+
+        // 📌 Consulta SQL para insertar datos en la tabla examenes_clinicos
+        const query = `
+            INSERT INTO examenes_clinicos (
+                mascota_id,
+                fecha,
+                actitud,
+                condicion_corporal,
+                hidratacion,
+                observaciones,
+                mucosa_conjuntiva,
+                mucosa_conjuntiva_observaciones,
+                mucosa_oral,
+                mucosa_oral_observaciones,
+                mucosa_vulvar_prepu,
+                mucosa_vulvar_prepu_observaciones,
+                mucosa_rectal,
+                mucosa_rectal_observaciones,
+                mucosa_ojos,
+                mucosa_ojos_observaciones,
+                mucosa_oidos,
+                mucosa_oidos_observaciones,
+                mucosa_nodulos,
+                mucosa_nodulos_observaciones,
+                mucosa_piel_anexos,
+                mucosa_piel_anexos_observaciones,
+                locomocion_estado,
+                locomocion_observaciones,
+                musculo_estado,
+                musculo_observaciones,
+                nervioso_estado,
+                nervioso_observaciones,
+                cardiovascular_estado,
+                cardiovascular_observaciones,
+                respiratorio_estado,
+                respiratorio_observaciones,
+                digestivo_estado,
+                digestivo_observaciones,
+                genitourinario_estado,
+                genitourinario_observaciones
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+
+        // 📌 Ejecutar la consulta en la base de datos
         const [result] = await db.query(query, [
-            mascota_id,
-    fecha,
-    actitud,
-    condicion_corporal,
-    hidratacion,
-    observaciones || null,
-    mucosa_conjuntiva || null,
-    mucosa_conjuntiva_observaciones || null,
-    mucosa_oral || null,
-    mucosa_oral_observaciones || null,
-    mucosa_vulvar_prepu || null,
-    mucosa_vulvar_prepu_observaciones || null,
-    mucosa_rectal || null,
-    mucosa_rectal_observaciones || null,
-    mucosa_ojos || null,
-    mucosa_ojos_observaciones || null,
-    mucosa_oidos || null,
-    mucosa_oidos_observaciones || null,
-    mucosa_nodulos || null,
-    mucosa_nodulos_observaciones || null,
-    mucosa_piel_anexos || null,
-    mucosa_piel_anexos_observaciones || null,
-    locomocion_estado || null,
-    locomocion_observaciones || null,
-    musculo_estado || null,
-    musculo_observaciones || null,
-    nervioso_estado || null,
-    nervioso_observaciones || null,
-    cardiovascular_estado || null,
-    cardiovascular_observaciones || null,
-    respiratorio_estado || null,
-    respiratorio_observaciones || null,
-    digestivo_estado || null,
-    digestivo_observaciones || null,
-    genitourinario_estado || null,
-    genitourinario_observaciones || null,
+            mascotaId, // 📌 ID de la mascota obtenido desde la URL
+            fecha,
+            actitud,
+            condicion_corporal,
+            hidratacion,
+            observaciones || null,
+            mucosa_conjuntiva || null,
+            mucosa_conjuntiva_observaciones || null,
+            mucosa_oral || null,
+            mucosa_oral_observaciones || null,
+            mucosa_vulvar_prepu || null,
+            mucosa_vulvar_prepu_observaciones || null,
+            mucosa_rectal || null,
+            mucosa_rectal_observaciones || null,
+            mucosa_ojos || null,
+            mucosa_ojos_observaciones || null,
+            mucosa_oidos || null,
+            mucosa_oidos_observaciones || null,
+            mucosa_nodulos || null,
+            mucosa_nodulos_observaciones || null,
+            mucosa_piel_anexos || null,
+            mucosa_piel_anexos_observaciones || null,
+            locomocion_estado || null,
+            locomocion_observaciones || null,
+            musculo_estado || null,
+            musculo_observaciones || null,
+            nervioso_estado || null,
+            nervioso_observaciones || null,
+            cardiovascular_estado || null,
+            cardiovascular_observaciones || null,
+            respiratorio_estado || null,
+            respiratorio_observaciones || null,
+            digestivo_estado || null,
+            digestivo_observaciones || null,
+            genitourinario_estado || null,
+            genitourinario_observaciones || null
         ]);
 
+        // 📌 Responder con éxito
         res.status(201).json({
-            message: 'Examen clínico registrado con éxito.',
-            examen_clinico_id: result.insertId,
+            message: '✅ Examen clínico registrado con éxito.',
+            examen_clinico_id: result.insertId
         });
+
     } catch (error) {
-        console.error('Error al registrar el examen clínico:', error);
+        console.error('❌ Error al registrar el examen clínico:', error);
         res.status(500).json({ error: 'Error al registrar el examen clínico.' });
     }
 });
@@ -1166,14 +1191,14 @@ router.get("/api/ver_cita/:id", async (req, res) => {
 // 📌 Actualizar todos los campos de una cita
 router.put("/api/editar_cita/:id", async (req, res) => {
     const { id } = req.params;
-    const { fecha_hora, motivo, mascota_id, propietario_id, veterinario_id, estado } = req.body;
+    const { fecha_hora, motivo, veterinario_id } = req.body; // 📌 Solo los datos editables
 
     try {
         const [result] = await db.query(
             `UPDATE citas_veterinarias 
-            SET fecha_hora = ?, motivo = ?, mascota_id = ?, propietario_id = ?, veterinario_id = ?, estado = ? 
+            SET fecha_hora = ?, motivo = ?, veterinario_id = ? 
             WHERE id = ?`,
-            [fecha_hora, motivo, mascota_id, propietario_id, veterinario_id, estado, id]
+            [fecha_hora, motivo, veterinario_id, id]
         );
 
         if (result.affectedRows > 0) {
@@ -1186,5 +1211,6 @@ router.put("/api/editar_cita/:id", async (req, res) => {
         res.status(500).json({ error: "❌ Error al actualizar la cita." });
     }
 });
+
 
 module.exports = router;

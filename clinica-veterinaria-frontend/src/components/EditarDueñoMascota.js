@@ -3,6 +3,8 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import "../Styles/EditarDueñoMascota.css"; // Asegúrate de enlazar el CSS
 import Sidebar from "../components/Sidebar"; // ✅ Sidebar integrado
+import { FaArrowLeft } from "react-icons/fa";
+
 const EditarDueñoMascota = () => {
   const { id } = useParams(); // Capturar el ID del propietario
   const navigate = useNavigate();
@@ -39,13 +41,13 @@ const EditarDueñoMascota = () => {
     try {
       await axios.put(`http://localhost:5000/api/editar_propietario/${id}`, propietario);
       alert("✅ Propietario actualizado correctamente.");
-      navigate("/ver-propietario"); // Redirigir a la lista de propietarios después de guardar
+      navigate(-1)
     } catch (error) {
       console.error("Error al actualizar propietario:", error);
       setError("❌ Error al actualizar el propietario.");
     }
   };
-
+    
   return (
 
     <div className="dashboard-container">
@@ -54,6 +56,10 @@ const EditarDueñoMascota = () => {
 
     <div className="editar-container">
       <h2>✏️ Editar Propietario</h2>
+
+      <button className="back-button" onClick={() => navigate(-1)}>
+                            <FaArrowLeft /> Volver
+                          </button>
       
       {error && <p className="error-message">{error}</p>}
 
@@ -76,7 +82,8 @@ const EditarDueñoMascota = () => {
       <input type="text" name="celular" value={propietario.celular} onChange={handleChange} />
 
       <button className="btn btn-save" onClick={handleSave}>💾 Guardar Cambios</button>
-      <button className="btn btn-cancel" onClick={() => navigate("/ver-propietario")}>❌ Cancelar</button>
+      <button type="button" className="cancel-button" onClick={() => navigate(-1)}> ❌ Cancelar</button>
+
     </div>
     </div>
   );

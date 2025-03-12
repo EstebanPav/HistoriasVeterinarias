@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useParams, useNavigate} from "react-router-dom"; // 📌 Importamos useParams
+
 import "bootstrap/dist/css/bootstrap.min.css"; // Solo CSS
 import "bootstrap/dist/js/bootstrap.bundle"; // Importa el JS correctamente
-
 import "../Styles/HistoriasClinicas.css"; // Asegúrate de que este archivo esté configurado correctamente.
 import Sidebar from "../components/Sidebar"; // 🔹 Importamos Sidebar
+import { FaArrowLeft } from "react-icons/fa";
+
 
 const RegistrarHistoriaClinica = () => {
 
-  const [mascotas, setMascotas] = useState([]);
+  const { mascotaId } = useParams(); // 📌 Obtener el ID de la mascota desde la URL
   const [veterinarios, setVeterinarios] = useState([]);
+    const navigate = useNavigate();
   const [formData, setFormData] = useState({
     mascota_id: "",
     fecha: "",
@@ -34,22 +38,16 @@ const RegistrarHistoriaClinica = () => {
   // Cargar datos de mascotas y veterinarios
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const mascotasResponse = await axios.get(
-          "http://localhost:5000/api/mascotasHistorial"
-        );
-        const veterinariosResponse = await axios.get(
-          "http://localhost:5000/api/veterinarios"
-        );
-        setMascotas(mascotasResponse.data);
-        setVeterinarios(veterinariosResponse.data);
-      } catch (error) {
-        console.error("Error al cargar los datos:", error);
-        setError("No se pudieron cargar los datos necesarios.");
-      }
+        try {
+            const veterinariosResponse = await axios.get("http://localhost:5000/api/veterinarios");
+            setVeterinarios(veterinariosResponse.data);
+        } catch (error) {
+            console.error("Error al cargar los veterinarios:", error);
+            setError("No se pudieron cargar los datos de los veterinarios.");
+        }
     };
     fetchData();
-  }, []);
+}, []);
 
   // Manejo de cambios en el formulario
   const handleChange = (e) => {
@@ -65,11 +63,7 @@ const RegistrarHistoriaClinica = () => {
 
     try {
       // Enviar los datos a la API
-      await axios.post(
-        "http://localhost:5000/api/historias_clinicas",
-        formData
-      );
-
+      await axios.post(`http://localhost:5000/api/historias_clinicas/${mascotaId}`, formData);
       // Respuesta exitosa
       setSuccess("Historia clínica registrada con éxito.");
       setFormData({
@@ -101,26 +95,16 @@ const RegistrarHistoriaClinica = () => {
     <div className="dashboard-container">
       <Sidebar /> {/* 📌 Usamos el nuevo Sidebar */}
       <div className="historias-form-container">
+      <button className="back-button" onClick={() => navigate(-1)}>
+                                    <FaArrowLeft /> Volver
+                                  </button>
       <h2 className="form-title">Registrar Historia</h2> 
         <form className="historias-form" onSubmit={handleSubmit}>
           {error && <p className="error-message">{error}</p>}
           {success && <p className="success-message">{success}</p>}
 
-          <label htmlFor="mascota">Seleccione Mascota:</label>
-          <select
-            id="mascota"
-            name="mascota_id"
-            value={formData.mascota_id}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Seleccione una mascota</option>
-            {mascotas.map((mascota) => (
-              <option key={mascota.id} value={mascota.id}>
-                {mascota.nombre}
-              </option>
-            ))}
-          </select>
+          {/* 📌 ID de mascota ya preseleccionado (oculto) */}
+          <input type="hidden" name="mascota_id" value={mascotaId} />
 
           <label htmlFor="fecha">Fecha:</label>
           <input

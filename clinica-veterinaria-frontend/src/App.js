@@ -10,7 +10,7 @@ import RegistrarMascota from './pages/RegistrarMascota';
 import RegistrarHistoriaClinica from './pages/RegistrarHistoriaClinica';
 import RegistrarExamenClinico from './pages/RegistrarExamenClinicos';
 import Navbar from './components/Navbar';
-import MascotasTable from "./pages/MascotasTable"; // ✅ Importar tabla de mascotas
+import MascotasTable from "./pages/MascotasTable"; // ✅ Tabla de mascotas
 import EditarMascota from "./components/EditarMascota";
 import Calendario from "./components/Calendario";
 import VerCitas from "./components/VerCitas";
@@ -22,6 +22,7 @@ import EditarHistoriaClinica from "./components/EditarHistoriaClinica";
 import EditarExamenClinico from './components/EditarExamenClinico';
 import VerExamenClinico from "./components/VerExamenClinico";
 import EditarDueñoMascota from "./components/EditarDueñoMascota";
+import MascotaDetallesPage from "./pages/MascotaDetallesPage"; // ✅ Nueva página de detalles
 
 // 📌 Middleware para proteger rutas privadas
 const PrivateRoute = ({ element }) => {
@@ -33,7 +34,7 @@ const App = () => {
     return (
         <Router>
             <Navbar />
-            <ToastContainer 
+            <ToastContainer
                 position="top-right"
                 autoClose={3000}
                 hideProgressBar={false}
@@ -55,17 +56,19 @@ const App = () => {
                 <Route path="/registrar-propietario" element={<PrivateRoute element={<RegistrarPropietario />} />} />
                 <Route path="/registrar-mascota" element={<PrivateRoute element={<RegistrarMascota />} />} />
                 <Route path="/registrar-historia/:mascotaId" element={<PrivateRoute element={<RegistrarHistoriaClinica />} />} />
+                <Route path="/registrar-examenes-clinicos/:mascotaId" element={<PrivateRoute element={<RegistrarExamenClinico />} />} />
                 <Route path="/ver-mascotas" element={<PrivateRoute element={<MascotasTable />} />} />  {/* ✅ Nueva Ruta */}
-                <Route path="/registrar-examen-clinico" element={<PrivateRoute element={<RegistrarExamenClinico />} />} />
+                <Route path="/detalle-mascota/:id" element={<PrivateRoute element={<MascotaDetallesPage />} />} />  {/* ✅ Página de detalles */}
                 <Route path="/ver-citas" element={<PrivateRoute element={<VerCitas />} />} />
                 <Route path="/editar-cita/:id" element={<PrivateRoute element={<EditarCita />} />} />
-                <Route path="/calendario" element={<PrivateRoute element={<Calendario />} />} />
-                <Route path="/editar-mascota/:id" element={<PrivateRoute element={<EditarMascota/>} />} />
+                <Route path="/registrar-cita/:id" element={<PrivateRoute element={<Calendario />} />} />
+                <Route path="/editar-mascota/:id" element={<PrivateRoute element={<EditarMascota />} />} />
                 <Route path="/notificar-cita/:id" element={<PrivateRoute element={<NotificarCita />} />} />
-                <Route path="/ver-propietario" element={<PrivateRoute element={<VerPropietario />} />} />
+                <Route path="/ver-propietario/:id" element={<PrivateRoute element={<VerPropietario />} />} />
                 <Route path="/editar-propietario/:id" element={<PrivateRoute element={<EditarDueñoMascota />} />} />
-                <Route path="/ver-historia-clinica" element={<PrivateRoute element={<VerHistoriaClinica />} />} />
-                <Route path="/ver-examen-clinico" element={<PrivateRoute element={<VerExamenClinico />} />} />
+                <Route path="/ver-historia-clinica/:id" element={<PrivateRoute element={<VerHistoriaClinica />} />} />
+                <Route path="/ver-examen-clinico/:id" element={<PrivateRoute element={<VerExamenClinico />} />} />
+
                 <Route path="/editar-historia-clinica/:id" element={<PrivateRoute element={<EditarHistoriaClinica />} />} />
                 <Route path="/editar-examen-clinico/:id" element={<PrivateRoute element={<EditarExamenClinico />} />} />
 

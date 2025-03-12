@@ -33,12 +33,6 @@ const Navbar = () => {
             <li className="nav-item">
               <Link className="nav-link" to="/registrar-mascota">Registrar Mascota</Link>
             </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/registrar-historia/:mascotaId">Registrar Historia</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/registrar-examen-clinico">Registrar Examen Clínico</Link>
-            </li>
             {/* 📌 Nueva opción para salir */}
             <li className="nav-item">
               <button className="nav-link btn btn-danger text-white" onClick={handleLogout}>
